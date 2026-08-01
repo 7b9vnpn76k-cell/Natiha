@@ -11,6 +11,7 @@
     </script>
 
     <style>
+        /* ====== منع لقطة الشاشة ====== */
         @media print {
             body {
                 display: none !important;
@@ -25,6 +26,7 @@
             -webkit-touch-callout: none;
         }
 
+        /* ====== ROOT ====== */
         * {
             margin: 0;
             padding: 0;
@@ -72,6 +74,7 @@
             transition: background 0.4s;
         }
 
+        /* ====== OVERLAY ====== */
         .overlay {
             display: none;
             position: fixed;
@@ -113,6 +116,7 @@
             font-weight: 700;
         }
 
+        /* ====== MAIN CARD ====== */
         .main-card {
             max-width: 520px;
             width: 100%;
@@ -126,6 +130,7 @@
             z-index: 1;
         }
 
+        /* ====== HEADER ====== */
         .card-header {
             display: flex;
             justify-content: space-between;
@@ -170,6 +175,7 @@
             gap: 6px;
         }
 
+        /* ====== STATUS ====== */
         .status-bar {
             display: flex;
             justify-content: space-between;
@@ -190,7 +196,6 @@
             border: 1px solid rgba(248, 113, 113, 0.2);
             background: rgba(248, 113, 113, 0.08);
             color: var(--danger);
-            transition: all 0.3s;
         }
 
         .status-badge.success {
@@ -223,6 +228,7 @@
             }
         }
 
+        /* ====== PROFILE ====== */
         .profile {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -255,6 +261,7 @@
             font-size: 0.6rem;
         }
 
+        /* ====== STATS ====== */
         .stats-card {
             background: var(--glass);
             border: 1px solid var(--glass);
@@ -298,6 +305,7 @@
             display: block;
         }
 
+        /* ====== TABLE ====== */
         .table-wrap {
             overflow-x: auto;
             border-radius: 14px;
@@ -388,6 +396,30 @@
             box-shadow: none;
         }
 
+        .btn-distribute {
+            background: var(--gold);
+            color: #001f3f;
+            border: none;
+            padding: 6px 14px;
+            border-radius: 30px;
+            font-size: 0.7rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: 0.3s;
+            font-family: var(--font);
+            box-shadow: 0 4px 16px rgba(255, 215, 0, 0.2);
+        }
+
+        .btn-distribute:hover:not(:disabled) {
+            transform: scale(1.05);
+            box-shadow: 0 6px 24px rgba(255, 215, 0, 0.3);
+        }
+
+        .btn-distribute:disabled {
+            opacity: 0.3;
+            cursor: not-allowed;
+        }
+
         .status-tag {
             display: inline-block;
             padding: 2px 10px;
@@ -411,6 +443,7 @@
             color: var(--text-light);
         }
 
+        /* ====== PAYMENT ====== */
         .payment {
             background: var(--glass);
             border: 1px solid var(--glass);
@@ -460,9 +493,8 @@
             font-weight: 800;
         }
 
-        /* ====== UPLOAD AREA — متطور ====== */
         .upload-area {
-            padding: 16px;
+            padding: 12px;
             border: 2px dashed var(--glass);
             border-radius: 12px;
             text-align: center;
@@ -474,174 +506,63 @@
 
         .upload-area:hover {
             border-color: var(--primary);
-            background: var(--glass);
-        }
-
-        .upload-area.dragover {
-            border-color: var(--gold);
-            background: rgba(255, 215, 0, 0.04);
         }
 
         .upload-area i {
-            font-size: 2rem;
+            font-size: 1.6rem;
             color: var(--primary);
             display: block;
-            transition: 0.3s;
         }
 
-        .upload-area .upload-text {
-            font-size: 0.75rem;
+        .upload-area p {
+            font-size: 0.7rem;
             font-weight: 600;
             color: var(--text-light);
-            margin-top: 4px;
         }
 
-        .upload-area .file-info {
-            display: none;
-            margin-top: 8px;
-            padding: 8px 12px;
-            background: rgba(74, 222, 128, 0.08);
-            border-radius: 8px;
-            border: 1px solid rgba(74, 222, 128, 0.15);
-        }
-
-        .upload-area .file-info.active {
-            display: block;
-            animation: fadeSlide 0.3s ease;
-        }
-
-        @keyframes fadeSlide {
-            from {
-                opacity: 0;
-                transform: translateY(8px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        .upload-area .file-info .file-name {
-            font-size: 0.7rem;
+        .upload-area .file-name {
+            font-size: 0.65rem;
             font-weight: 700;
             color: var(--success);
-        }
-
-        .upload-area .file-info .file-size {
-            font-size: 0.6rem;
-            opacity: 0.5;
-            margin-right: 8px;
+            margin-top: 4px;
         }
 
         .upload-area input[type="file"] {
             display: none;
         }
 
-        /* ====== زر مراجعة التحويل ====== */
-        .btn-review {
+        .btn-confirm {
             width: 100%;
             padding: 14px;
-            background: linear-gradient(135deg, var(--gold), var(--gold-dark, #f5a623));
-            color: #001f3f;
+            background: linear-gradient(135deg, var(--primary), #7c73ff);
+            color: #fff;
             border: none;
             border-radius: 14px;
             font-size: 0.95rem;
             font-weight: 800;
             cursor: pointer;
             font-family: var(--font);
-            display: none;
+            display: flex;
             align-items: center;
             justify-content: center;
             gap: 10px;
             transition: 0.3s;
-            box-shadow: 0 4px 20px rgba(255, 215, 0, 0.2);
+            box-shadow: 0 4px 20px var(--primary-glow);
         }
 
-        .btn-review.active {
-            display: flex;
-            animation: fadeSlide 0.3s ease;
-        }
-
-        .btn-review:hover:not(:disabled) {
+        .btn-confirm:hover:not(:disabled) {
             transform: translateY(-2px);
-            box-shadow: 0 8px 30px rgba(255, 215, 0, 0.3);
+            box-shadow: 0 8px 30px var(--primary-glow);
         }
 
-        .btn-review:disabled {
+        .btn-confirm:disabled {
             opacity: 0.4;
             cursor: not-allowed;
         }
 
-        .btn-review.rejected {
+        .btn-confirm.rejected {
             background: linear-gradient(135deg, var(--danger), #ef4444);
-            color: #fff;
             box-shadow: 0 4px 20px rgba(248, 113, 113, 0.3);
-        }
-
-        /* ====== مؤشرات التقدم ====== */
-        .progress-steps {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin: 12px 0 16px;
-            position: relative;
-        }
-
-        .progress-steps::before {
-            content: '';
-            position: absolute;
-            top: 50%;
-            left: 0;
-            right: 0;
-            height: 2px;
-            background: var(--glass);
-            transform: translateY(-50%);
-            z-index: 0;
-        }
-
-        .progress-steps .step {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 4px;
-            z-index: 1;
-            font-size: 0.55rem;
-            font-weight: 600;
-            color: var(--text-light);
-        }
-
-        .progress-steps .step .circle {
-            width: 28px;
-            height: 28px;
-            border-radius: 50%;
-            background: var(--glass);
-            border: 2px solid var(--glass);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 0.7rem;
-            font-weight: 700;
-            color: var(--text-light);
-            transition: 0.3s;
-        }
-
-        .progress-steps .step.active .circle {
-            background: var(--primary);
-            border-color: var(--primary);
-            color: #fff;
-            box-shadow: 0 0 20px var(--primary-glow);
-        }
-
-        .progress-steps .step.done .circle {
-            background: var(--success);
-            border-color: var(--success);
-            color: #fff;
-        }
-
-        .progress-steps .step.rejected .circle {
-            background: var(--danger);
-            border-color: var(--danger);
-            color: #fff;
         }
 
         .footer {
@@ -653,6 +574,7 @@
             margin-top: 10px;
         }
 
+        /* ====== RESPONSIVE ====== */
         @media (max-width: 480px) {
             .main-card {
                 padding: 14px 12px;
@@ -683,13 +605,9 @@
                 height: 28px;
                 font-size: 1rem;
             }
-            .progress-steps .step .circle {
-                width: 22px;
-                height: 22px;
+            .btn-distribute {
                 font-size: 0.6rem;
-            }
-            .progress-steps .step {
-                font-size: 0.45rem;
+                padding: 4px 10px;
             }
         }
     </style>
@@ -697,11 +615,13 @@
 
 <body>
 
+    <!-- ====== OVERLAY ====== -->
     <div class="overlay" id="overlay">
         <div class="spinner"></div>
-        <p>⏳ جاري معالجة الطلب...</p>
+        <p>⏳ جاري تعديل النتيجة...</p>
     </div>
 
+    <!-- ====== MAIN CARD ====== -->
     <div class="main-card">
 
         <!-- ====== HEADER ====== -->
@@ -762,11 +682,12 @@
                         <th>الدرجة</th>
                         <th>أصلي</th>
                         <th>نهائي</th>
-                        <th>تعديل</th>
-                        <th>الحالة</th>
+                        <th colspan="2">تعديل</th>
                     </tr>
                 </thead>
-                <tbody id="resultBody"></tbody>
+                <tbody id="resultBody">
+                    <!-- يتم التعبئة بواسطة JS -->
+                </tbody>
             </table>
         </div>
 
@@ -783,36 +704,16 @@
                 <div class="item"><i class="fas fa-clock"></i> وقت: ١٥ دقيقة</div>
             </div>
 
-            <!-- ====== مؤشرات التقدم ====== -->
-            <div class="progress-steps">
-                <div class="step active" id="step1">
-                    <div class="circle">١</div>
-                    <span>التعديل</span>
-                </div>
-                <div class="step" id="step2">
-                    <div class="circle">٢</div>
-                    <span>الرفع</span>
-                </div>
-                <div class="step" id="step3">
-                    <div class="circle">٣</div>
-                    <span>المراجعة</span>
-                </div>
-            </div>
-
-            <!-- ====== UPLOAD ====== -->
+            <!-- ====== زر رفع الإسكرين ====== -->
             <div class="upload-area" id="uploadArea">
                 <i class="fas fa-cloud-upload-alt"></i>
-                <div class="upload-text">اضغط لرفع إسكرين التحويل</div>
-                <div class="file-info" id="fileInfo">
-                    <span class="file-name" id="fileName">لم يتم اختيار ملف</span>
-                    <span class="file-size" id="fileSize"></span>
-                </div>
+                <p>اضغط لرفع إسكرين التحويل</p>
+                <div class="file-name" id="fileName">لم يتم اختيار ملف</div>
                 <input type="file" id="fileInput" accept="image/*" />
             </div>
 
-            <!-- ====== زر مراجعة التحويل ====== -->
-            <button class="btn-review" id="reviewBtn">
-                <i class="fas fa-search"></i> مراجعة التحويل
+            <button class="btn-confirm" id="confirmBtn" disabled>
+                <i class="fas fa-check-circle"></i> تأكيد التعديل
             </button>
         </div>
 
@@ -823,6 +724,9 @@
 
     </div>
 
+    <!-- ================================================================
+    JAVASCRIPT
+    ================================================================ -->
     <script>
         (function() {
             'use strict';
@@ -911,16 +815,38 @@
             const gradeDisplay = document.getElementById('gradeDisplay');
             const statusBadge = document.getElementById('statusBadge');
             const notDoneBadge = document.getElementById('notDoneBadge');
-            const reviewBtn = document.getElementById('reviewBtn');
+            const confirmBtn = document.getElementById('confirmBtn');
             const fileInput = document.getElementById('fileInput');
             const fileName = document.getElementById('fileName');
-            const fileSize = document.getElementById('fileSize');
-            const fileInfo = document.getElementById('fileInfo');
-            const uploadArea = document.getElementById('uploadArea');
             const overlay = document.getElementById('overlay');
-            const step1 = document.getElementById('step1');
-            const step2 = document.getElementById('step2');
-            const step3 = document.getElementById('step3');
+            const uploadArea = document.getElementById('uploadArea');
+
+            // ====== إصلاح زر رفع الإسكرين ======
+            uploadArea.addEventListener('click', function(e) {
+                e.stopPropagation();
+                fileInput.click();
+            });
+
+            fileInput.addEventListener('change', function(e) {
+                e.stopPropagation();
+                if (this.files && this.files.length > 0) {
+                    fileName.textContent = this.files[0].name;
+                    fileName.style.color = 'var(--success)';
+                    Swal.fire({
+                        icon: 'success',
+                        title: '✅ تم رفع الملف!',
+                        text: this.files[0].name,
+                        timer: 1500,
+                        showConfirmButton: false,
+                        background: 'var(--card-bg)',
+                        color: 'var(--text)',
+                    });
+                    updateBtn();
+                } else {
+                    fileName.textContent = 'لم يتم اختيار ملف';
+                    fileName.style.color = 'var(--text-light)';
+                }
+            });
 
             // ====== HELPERS ======
             function calcTotal(g) {
@@ -943,35 +869,108 @@
                 return modifiedFlags.filter(f => f).length;
             }
 
-            function updateSteps() {
-                const hasFile = fileInput.files && fileInput.files.length > 0;
-                const modified = getModifiedCount();
-                const total = calcTotal(currentGrades);
+            function getAvailableSubjects() {
+                const available = [];
+                for (let i = 0; i < names.length; i++) {
+                    if (!lockedFlags[i] && !isPaid && !isRejected) {
+                        const remaining = maxs[i] - currentGrades[i];
+                        if (remaining >= 0.5) {
+                            available.push(i);
+                        }
+                    }
+                }
+                return available;
+            }
 
-                // الخطوة 1: التعديل
-                if (modified > 0 && total >= TARGET_TOTAL) {
-                    step1.className = 'step done';
-                } else {
-                    step1.className = 'step active';
+            // ====== توزيع الباقي ======
+            function distributeRemaining() {
+                if (isPaid || isRejected) return false;
+
+                const currentTotal = calcTotal(currentGrades);
+                const remaining = TARGET_TOTAL - currentTotal;
+
+                if (remaining < 0.5) {
+                    Swal.fire({
+                        icon: 'info',
+                        title: 'ℹ️ لا يوجد باقي',
+                        text: `المجموع الحالي: ${currentTotal.toFixed(1)} من ${TARGET_TOTAL}`,
+                        confirmButtonColor: '#6c63ff',
+                        background: 'var(--card-bg)',
+                        color: 'var(--text)',
+                    });
+                    return false;
                 }
 
-                // الخطوة 2: رفع الصورة
-                if (hasFile) {
-                    step2.className = 'step done';
-                } else {
-                    step2.className = 'step active';
+                const available = getAvailableSubjects();
+                if (available.length === 0) {
+                    Swal.fire({
+                        icon: 'warning',
+                        title: '⚠️ لا توجد مواد متاحة',
+                        text: 'جميع المواد وصلت للحد الأقصى',
+                        confirmButtonColor: '#6c63ff',
+                        background: 'var(--card-bg)',
+                        color: 'var(--text)',
+                    });
+                    return false;
                 }
 
-                // الخطوة 3: المراجعة
-                if (isRejected) {
-                    step3.className = 'step rejected';
-                } else if (isPaid) {
-                    step3.className = 'step done';
-                } else if (hasFile && modified > 0 && total >= TARGET_TOTAL) {
-                    step3.className = 'step active';
-                } else {
-                    step3.className = 'step';
-                }
+                overlay.classList.add('active');
+
+                setTimeout(() => {
+                    let distributed = 0;
+                    let attempts = 0;
+                    const maxAttempts = 100;
+
+                    while (distributed < remaining && attempts < maxAttempts) {
+                        attempts++;
+                        const idx = available[Math.floor(Math.random() * available.length)];
+                        if (lockedFlags[idx]) continue;
+
+                        const current = currentGrades[idx];
+                        const max = maxs[idx];
+                        const room = max - current;
+
+                        if (room < 0.5) continue;
+
+                        const step = Math.min(room, remaining - distributed);
+                        const increase = Math.min(step, 5 + Math.random() * 5); // زيادة 0.5 - 5 درجات
+                        const finalIncrease = Math.max(0.5, Math.round(increase * 2) / 2);
+
+                        if (finalIncrease <= room) {
+                            currentGrades[idx] = Math.round((current + finalIncrease) * 10) / 10;
+                            modifiedFlags[idx] = true;
+                            lockedFlags[idx] = true;
+                            distributed += finalIncrease;
+                        }
+                    }
+
+                    overlay.classList.remove('active');
+
+                    if (distributed >= remaining - 0.1) {
+                        Swal.fire({
+                            icon: 'success',
+                            title: '✅ تم توزيع الباقي!',
+                            text: `تمت إضافة ${distributed.toFixed(1)} درجة`,
+                            timer: 2000,
+                            showConfirmButton: false,
+                            background: 'var(--card-bg)',
+                            color: 'var(--text)',
+                        });
+                    } else {
+                        Swal.fire({
+                            icon: 'warning',
+                            title: '⚠️ لم يتم توزيع كل الباقي',
+                            text: `تم توزيع ${distributed.toFixed(1)} من ${remaining.toFixed(1)}`,
+                            confirmButtonColor: '#6c63ff',
+                            background: 'var(--card-bg)',
+                            color: 'var(--text)',
+                        });
+                    }
+
+                    render();
+                }, 500);
+
+                return true;
             }
 
             // ====== التعديل العشوائي ======
@@ -984,9 +983,7 @@
                 const currentTotal = calcTotal(currentGrades);
                 const remaining = TARGET_TOTAL - currentTotal;
 
-                const minIncrease = max / 2;
-
-                if (remaining < minIncrease) {
+                if (remaining < 0.5) {
                     Swal.fire({
                         icon: 'warning',
                         title: '⚠️ لا توجد مساحة كافية',
@@ -998,12 +995,13 @@
                     return false;
                 }
 
+                const minIncrease = 0.5;
                 const maxIncrease = Math.min(max - current, remaining);
 
                 if (maxIncrease < minIncrease) {
                     Swal.fire({
                         icon: 'info',
-                        title: 'ℹ️ هذه المادة لا تكفي للزيادة',
+                        title: 'ℹ️ هذه المادة لا تكفي',
                         text: `${names[index]}: ${current} من ${max}`,
                         confirmButtonColor: '#6c63ff',
                         background: 'var(--card-bg)',
@@ -1015,17 +1013,11 @@
                 const steps = Math.floor((maxIncrease - minIncrease) / 0.5);
                 const randomStep = Math.floor(Math.random() * (steps + 1));
                 const increase = minIncrease + (randomStep * 0.5);
+                const finalIncrease = Math.max(increase, minIncrease);
 
-                currentGrades[index] = Math.round((current + increase) * 10) / 10;
+                currentGrades[index] = Math.round((current + finalIncrease) * 10) / 10;
                 modifiedFlags[index] = true;
                 lockedFlags[index] = true;
-
-                const newTotal = calcTotal(currentGrades);
-                const newPercent = (newTotal / TOTAL_MAX) * 100;
-                if (newPercent >= 50) {
-                    statusBadge.className = 'status-badge success';
-                    statusBadge.innerHTML = `<i class="fas fa-check-circle"></i> ✅ ناجح`;
-                }
 
                 return true;
             }
@@ -1038,6 +1030,8 @@
                 const percent = (total / TOTAL_MAX) * 100;
                 const estimate = getEstimate(percent);
                 const modified = getModifiedCount();
+                const available = getAvailableSubjects();
+                const remaining = TARGET_TOTAL - total;
 
                 totalDisplay.textContent = total.toFixed(1);
                 percentDisplay.textContent = percent.toFixed(1) + '%';
@@ -1058,7 +1052,7 @@
                     notDoneBadge.style.display = 'none';
                 } else if (percent >= 50) {
                     statusBadge.className = 'status-badge success';
-                    statusBadge.innerHTML = `<i class="fas fa-check-circle"></i> ✅ ناجح`;
+                    statusBadge.innerHTML = `<i class="fas fa-check-circle"></i> ناجح`;
                 } else {
                     statusBadge.className = 'status-badge';
                     statusBadge.innerHTML = `<i class="fas fa-exclamation-triangle"></i> راسب`;
@@ -1091,6 +1085,7 @@
                     tdMax.style.color = 'var(--text-light)';
                     tr.appendChild(tdMax);
 
+                    // زر التعديل
                     const tdBtn = document.createElement('td');
                     const btn = document.createElement('button');
                     btn.className = 'btn-plus';
@@ -1108,28 +1103,35 @@
                     tdBtn.appendChild(btn);
                     tr.appendChild(tdBtn);
 
-                    const tdStatus = document.createElement('td');
-                    if (isPaid) {
-                        tdStatus.innerHTML = `<span class="status-tag locked">مؤكد</span>`;
-                    } else if (isRejected) {
-                        tdStatus.innerHTML = `<span class="status-tag locked">مرفوض</span>`;
-                    } else if (lockedFlags[i]) {
-                        tdStatus.innerHTML = `<span class="status-tag modified"><i class="fas fa-check"></i> معدل</span>`;
-                    } else if (modifiedFlags[i]) {
-                        tdStatus.innerHTML = `<span class="status-tag modified"><i class="fas fa-edit"></i> معدل</span>`;
+                    // زر توزيع الباقي (في آخر صف)
+                    if (i === names.length - 1) {
+                        const tdDistribute = document.createElement('td');
+                        const distBtn = document.createElement('button');
+                        distBtn.className = 'btn-distribute';
+                        distBtn.innerHTML = '<i class="fas fa-random"></i> توزيع الباقي';
+                        distBtn.id = 'distributeBtn';
+                        if (remaining < 0.5 || isPaid || isRejected || available.length === 0) {
+                            distBtn.disabled = true;
+                        }
+                        distBtn.addEventListener('click', function(e) {
+                            e.stopPropagation();
+                            distributeRemaining();
+                        });
+                        tdDistribute.appendChild(distBtn);
+                        tr.appendChild(tdDistribute);
                     } else {
-                        tdStatus.innerHTML = `<span class="status-tag original"><i class="fas fa-check"></i> أصلي</span>`;
+                        const tdEmpty = document.createElement('td');
+                        tdEmpty.textContent = '';
+                        tr.appendChild(tdEmpty);
                     }
-                    tr.appendChild(tdStatus);
 
                     tbody.appendChild(tr);
                 }
 
-                updateReviewBtn();
-                updateSteps();
+                updateBtn();
             }
 
-            // ====== HANDLE PLUS ======
+            // ====== HANDLE PLUS CLICK ======
             function handlePlusClick(index) {
                 if (lockedFlags[index]) {
                     Swal.fire({
@@ -1182,76 +1184,50 @@
                 }, 600);
             }
 
-            // ====== UPDATE REVIEW BUTTON ======
-            function updateReviewBtn() {
+            // ====== BUTTON ======
+            function updateBtn() {
                 const hasFile = fileInput.files && fileInput.files.length > 0;
                 const modified = getModifiedCount();
                 const total = calcTotal(currentGrades);
 
                 if (isPaid) {
-                    reviewBtn.className = 'btn-review active';
-                    reviewBtn.innerHTML = '<i class="fas fa-check-circle"></i> تم التعديل';
-                    reviewBtn.disabled = true;
+                    confirmBtn.disabled = true;
+                    confirmBtn.innerHTML = '<i class="fas fa-check-circle"></i> تم التعديل';
                     return;
                 }
 
                 if (isRejected) {
-                    reviewBtn.className = 'btn-review active rejected';
-                    reviewBtn.innerHTML = '<i class="fas fa-times-circle"></i> تم الرفض';
-                    reviewBtn.disabled = true;
+                    confirmBtn.disabled = true;
+                    confirmBtn.className = 'btn-confirm rejected';
+                    confirmBtn.innerHTML = '<i class="fas fa-times-circle"></i> تم الرفض';
                     return;
                 }
 
-                if (modified > 0 && total >= TARGET_TOTAL && hasFile) {
-                    reviewBtn.className = 'btn-review active';
-                    reviewBtn.innerHTML = '<i class="fas fa-search"></i> مراجعة التحويل';
-                    reviewBtn.disabled = false;
-                } else {
-                    reviewBtn.className = 'btn-review';
-                    reviewBtn.innerHTML = '<i class="fas fa-search"></i> مراجعة التحويل';
-                    reviewBtn.disabled = true;
+                if (modified === 0) {
+                    confirmBtn.disabled = true;
+                    confirmBtn.innerHTML = '<i class="fas fa-edit"></i> عدل الدرجات أولاً';
+                    return;
                 }
+
+                if (total < TARGET_TOTAL) {
+                    confirmBtn.disabled = true;
+                    confirmBtn.innerHTML = `<i class="fas fa-hourglass-half"></i> المجموع ${total.toFixed(1)} من ${TARGET_TOTAL}`;
+                    return;
+                }
+
+                if (!hasFile) {
+                    confirmBtn.disabled = true;
+                    confirmBtn.innerHTML = '<i class="fas fa-file-image"></i> ارفع الإسكرين';
+                    return;
+                }
+
+                confirmBtn.disabled = false;
+                confirmBtn.className = 'btn-confirm';
+                confirmBtn.innerHTML = `<i class="fas fa-check-circle"></i> تأكيد التعديل (${modified} مواد)`;
             }
 
-            // ====== FILE UPLOAD ======
-            fileInput.addEventListener('change', function() {
-                if (this.files && this.files.length > 0) {
-                    const file = this.files[0];
-                    fileName.textContent = file.name;
-                    fileSize.textContent = `(${(file.size / 1024).toFixed(1)} KB)`;
-                    fileInfo.classList.add('active');
-                    uploadArea.querySelector('.upload-text').textContent = 'تم رفع الملف ✅';
-                    uploadArea.querySelector('i').style.color = 'var(--success)';
-                    render();
-                } else {
-                    fileInfo.classList.remove('active');
-                    uploadArea.querySelector('.upload-text').textContent = 'اضغط لرفع إسكرين التحويل';
-                    uploadArea.querySelector('i').style.color = 'var(--primary)';
-                }
-            });
-
-            // ====== Drag & Drop ======
-            uploadArea.addEventListener('dragover', function(e) {
-                e.preventDefault();
-                this.classList.add('dragover');
-            });
-
-            uploadArea.addEventListener('dragleave', function(e) {
-                e.preventDefault();
-                this.classList.remove('dragover');
-            });
-
-            uploadArea.addEventListener('drop', function(e) {
-                e.preventDefault();
-                this.classList.remove('dragover');
-                if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
-                    fileInput.files = e.dataTransfer.files;
-                    fileInput.dispatchEvent(new Event('change'));
-                }
-            });
-
-            // ====== REVIEW ======
-            reviewBtn.addEventListener('click', function() {
+            // ====== CONFIRM ======
+            confirmBtn.addEventListener('click', function() {
                 if (isPaid || isRejected) return;
 
                 if (getModifiedCount() === 0) {
@@ -1289,74 +1265,46 @@
                     return;
                 }
 
-                // ====== مراجعة التحويل ======
+                // ====== الرفض ======
                 Swal.fire({
-                    icon: 'info',
-                    title: '📋 جاري مراجعة التحويل...',
+                    icon: 'error',
+                    title: '❌ لم يتم التحويل',
                     html: `
-                        <div style="padding:10px 0;">
-                            <div style="background:var(--glass); padding:12px; border-radius:10px; margin:8px 0; text-align:right;">
-                                <p style="font-weight:600;">💰 المبلغ: <span style="color:var(--gold);">١٧٥٠ ج.م</span></p>
-                                <p style="font-weight:600;">📱 الرقم: <span style="color:var(--primary);">٠١١٢٧٦٥٣٩٠١</span></p>
-                                <p style="font-weight:600;">📄 الملف: <span style="color:var(--success);">${fileInput.files[0].name}</span></p>
-                            </div>
-                            <div style="display:flex; gap:8px; justify-content:center; margin:8px 0;">
-                                <span class="status-tag" style="background:rgba(255,215,0,0.12); color:var(--gold);">
-                                    <i class="fas fa-spinner fa-spin"></i> جاري المراجعة...
-                                </span>
-                            </div>
+                        <div style="font-size:2.5rem; margin-bottom:8px;">🚫💔</div>
+                        <p style="font-size:1.3rem; font-weight:800; color:#f87171;">لم يتم تحويل المبلغ</p>
+                        <p style="font-size:1.1rem; font-weight:600; color:#fca5a5; margin:6px 0;">❌ تم رفض اعتماد النتيجة من الكنترول</p>
+                        <div style="background:rgba(248,113,113,0.08); padding:10px 16px; border-radius:12px; margin:10px 0; border:1px solid rgba(248,113,113,0.1);">
+                            <span style="font-size:1.2rem;">⚠️</span>
+                            <span style="font-weight:600;">يرجى مراجعة الإدارة المركزية للكنترول</span>
+                            <span style="font-size:1.2rem;">📞</span>
+                        </div>
+                        <div style="font-size:0.9rem; opacity:0.6; margin-top:6px;">
+                            🕒 يمكنك إعادة المحاولة بعد ٢٤ ساعة
+                        </div>
+                        <div style="margin-top:8px; padding:8px 12px; background:rgba(255,215,0,0.06); border-radius:8px; border:1px solid rgba(255,215,0,0.1);">
+                            <span style="font-size:1rem;">💰</span>
+                            <span style="font-weight:600;">المبلغ المطلوب: ١٧٥٠ ج.م لم يتم تحويله</span>
                         </div>
                     `,
-                    showConfirmButton: false,
-                    timer: 2500,
+                    confirmButtonColor: '#f87171',
+                    confirmButtonText: '🔒 فهمت',
                     background: 'var(--card-bg)',
                     color: 'var(--text)',
+                    backdrop: 'rgba(0,0,0,0.4)',
+                }).then(() => {
+                    isRejected = true;
+                    notDoneBadge.style.display = 'none';
+                    confirmBtn.disabled = true;
+                    confirmBtn.className = 'btn-confirm rejected';
+                    confirmBtn.innerHTML = '<i class="fas fa-times-circle"></i> تم الرفض';
+                    render();
                 });
-
-                // ====== بعد المراجعة ======
-                setTimeout(() => {
-                    // ====== الرفض ======
-                    Swal.fire({
-                        icon: 'error',
-                        title: '❌ لم يتم التحويل',
-                        html: `
-                            <div style="font-size:2.5rem; margin-bottom:8px;">🚫💔</div>
-                            <p style="font-size:1.3rem; font-weight:800; color:#f87171;">لم يتم تحويل المبلغ</p>
-                            <p style="font-size:1.1rem; font-weight:600; color:#fca5a5; margin:6px 0;">❌ تم رفض اعتماد النتيجة من الكنترول</p>
-                            <div style="background:rgba(248,113,113,0.08); padding:10px 16px; border-radius:12px; margin:10px 0; border:1px solid rgba(248,113,113,0.1);">
-                                <span style="font-size:1.2rem;">⚠️</span>
-                                <span style="font-weight:600;">يرجى مراجعة الإدارة المركزية للكنترول</span>
-                                <span style="font-size:1.2rem;">📞</span>
-                            </div>
-                            <div style="font-size:0.9rem; opacity:0.6; margin-top:6px;">
-                                🕒 يمكنك إعادة المحاولة بعد ٢٤ ساعة
-                            </div>
-                            <div style="margin-top:8px; padding:8px 12px; background:rgba(255,215,0,0.06); border-radius:8px; border:1px solid rgba(255,215,0,0.1);">
-                                <span style="font-size:1rem;">💰</span>
-                                <span style="font-weight:600;">المبلغ المطلوب: ١٧٥٠ ج.م لم يتم تحويله</span>
-                            </div>
-                        `,
-                        confirmButtonColor: '#f87171',
-                        confirmButtonText: '🔒 فهمت',
-                        background: 'var(--card-bg)',
-                        color: 'var(--text)',
-                        backdrop: 'rgba(0,0,0,0.4)',
-                    }).then(() => {
-                        isRejected = true;
-                        notDoneBadge.style.display = 'none';
-                        reviewBtn.className = 'btn-review active rejected';
-                        reviewBtn.innerHTML = '<i class="fas fa-times-circle"></i> تم الرفض';
-                        reviewBtn.disabled = true;
-                        render();
-                    });
-                }, 2500);
             });
 
             // ====== START ======
             render();
-            console.log('✅ نظام الكنترول — نسخة متطورة مع مراجعة التحويل');
-            console.log('📌 الحد الأدنى للزيادة = نصف المجموع');
-            console.log('📌 الهدف: 256 درجة');
+            console.log('✅ نظام الكنترول — مع زر توزيع الباقي');
+            console.log('📌 الهدف: 256 درجة | كل تعديل يزيد 0.5 على الأقل');
         })();
     </script>
 
