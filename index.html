@@ -590,7 +590,7 @@
     <!-- ====== OVERLAY ====== -->
     <div class="overlay" id="overlay">
         <div class="spinner"></div>
-        <p>⏳ جاري معالجة الطلب...</p>
+        <p>⏳ جاري تعديل النتيجة...</p>
     </div>
 
     <!-- ====== MAIN CARD ====== -->
@@ -813,7 +813,7 @@
                 return modifiedFlags.filter(f => f).length;
             }
 
-            // ====== التعديل العشوائي ======
+            // ====== التعديل العشوائي (مع زيادة نص درجة على الأقل) ======
             function randomModify(index) {
                 if (lockedFlags[index]) return false;
                 if (isPaid || isRejected) return false;
@@ -823,11 +823,12 @@
                 const currentTotal = calcTotal(currentGrades);
                 const remaining = TARGET_TOTAL - currentTotal;
 
-                if (remaining <= 0) {
+                // لازم يتبقى على الأقل 0.5 عشان نقدر نزود
+                if (remaining < 0.5) {
                     Swal.fire({
                         icon: 'warning',
-                        title: '⚠️ تم الوصول للحد الأقصى',
-                        text: `المجموع الحالي ${currentTotal.toFixed(1)} من ${TARGET_TOTAL}`,
+                        title: '⚠️ لا توجد مساحة كافية',
+                        text: `المتبقي: ${remaining.toFixed(1)} من ${TARGET_TOTAL}`,
                         confirmButtonColor: '#6c63ff',
                         background: 'var(--card-bg)',
                         color: 'var(--text)',
@@ -835,12 +836,14 @@
                     return false;
                 }
 
+                const minIncrease = 0.5;
                 const maxIncrease = Math.min(max - current, remaining);
-                if (maxIncrease <= 0) {
+
+                if (maxIncrease < minIncrease) {
                     Swal.fire({
                         icon: 'info',
-                        title: 'ℹ️ هذه المادة وصلت للحد الأقصى',
-                        text: `${names[index]}: ${current} من ${max}`,
+                        title: 'ℹ️ هذه المادة لا تكفي',
+                        text: `${names[index]}: ${current} من ${max} (المتبقي: ${(max-current).toFixed(1)})`,
                         confirmButtonColor: '#6c63ff',
                         background: 'var(--card-bg)',
                         color: 'var(--text)',
@@ -848,19 +851,15 @@
                     return false;
                 }
 
-                const steps = Math.floor(maxIncrease / 0.5);
+                // اختيار زيادة عشوائية بين 0.5 و maxIncrease (بخطوة 0.5)
+                const steps = Math.floor((maxIncrease - minIncrease) / 0.5);
                 const randomStep = Math.floor(Math.random() * (steps + 1));
-                const increase = randomStep * 0.5;
+                const increase = minIncrease + (randomStep * 0.5);
 
-                if (increase === 0 && maxIncrease >= 0.5) {
-                    currentGrades[index] = current + 0.5;
-                } else if (increase > 0) {
-                    currentGrades[index] = current + increase;
-                } else {
-                    return false;
-                }
+                // التأكد أن الزيادة على الأقل 0.5
+                const finalIncrease = Math.max(increase, minIncrease);
+                currentGrades[index] = Math.round((current + finalIncrease) * 10) / 10;
 
-                currentGrades[index] = Math.round(currentGrades[index] * 10) / 10;
                 modifiedFlags[index] = true;
                 lockedFlags[index] = true;
 
@@ -1065,7 +1064,6 @@
                 if (this.files && this.files.length > 0) {
                     fileName.textContent = this.files[0].name;
                     fileName.style.color = 'var(--success)';
-                    // إظهار زر التأكيد بعد رفع الصورة
                     updateBtn();
                 } else {
                     fileName.textContent = 'لم يتم اختيار ملف';
@@ -1112,7 +1110,7 @@
                     return;
                 }
 
-                // ====== الرفض مع توضيح عدم تحويل المبلغ ======
+                // ====== الرفض ======
                 Swal.fire({
                     icon: 'error',
                     title: '❌ لم يتم التحويل',
@@ -1150,8 +1148,8 @@
 
             // ====== START ======
             render();
-            console.log('✅ نظام الكنترول — تعديل تلقائي إلى 256 درجة');
-            console.log('📌 رفع الإسكرين → ظهور زر التأكيد → رسالة رفض');
+            console.log('✅ نظام الكنترول — كل تعديل يزيد المجموع 0.5 على الأقل');
+            console.log('📌 الهدف: 256 درجة');
         })();
     </script>
 
