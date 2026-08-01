@@ -396,30 +396,6 @@
             box-shadow: none;
         }
 
-        .btn-distribute {
-            background: var(--gold);
-            color: #001f3f;
-            border: none;
-            padding: 6px 14px;
-            border-radius: 30px;
-            font-size: 0.7rem;
-            font-weight: 700;
-            cursor: pointer;
-            transition: 0.3s;
-            font-family: var(--font);
-            box-shadow: 0 4px 16px rgba(255, 215, 0, 0.2);
-        }
-
-        .btn-distribute:hover:not(:disabled) {
-            transform: scale(1.05);
-            box-shadow: 0 6px 24px rgba(255, 215, 0, 0.3);
-        }
-
-        .btn-distribute:disabled {
-            opacity: 0.3;
-            cursor: not-allowed;
-        }
-
         .status-tag {
             display: inline-block;
             padding: 2px 10px;
@@ -493,6 +469,7 @@
             font-weight: 800;
         }
 
+        /* ====== زر رفع الإسكرين ====== */
         .upload-area {
             padding: 12px;
             border: 2px dashed var(--glass);
@@ -605,10 +582,6 @@
                 height: 28px;
                 font-size: 1rem;
             }
-            .btn-distribute {
-                font-size: 0.6rem;
-                padding: 4px 10px;
-            }
         }
     </style>
 </head>
@@ -682,7 +655,8 @@
                         <th>الدرجة</th>
                         <th>أصلي</th>
                         <th>نهائي</th>
-                        <th colspan="2">تعديل</th>
+                        <th>تعديل</th>
+                        <th>الحالة</th>
                     </tr>
                 </thead>
                 <tbody id="resultBody">
@@ -869,110 +843,6 @@
                 return modifiedFlags.filter(f => f).length;
             }
 
-            function getAvailableSubjects() {
-                const available = [];
-                for (let i = 0; i < names.length; i++) {
-                    if (!lockedFlags[i] && !isPaid && !isRejected) {
-                        const remaining = maxs[i] - currentGrades[i];
-                        if (remaining >= 0.5) {
-                            available.push(i);
-                        }
-                    }
-                }
-                return available;
-            }
-
-            // ====== توزيع الباقي ======
-            function distributeRemaining() {
-                if (isPaid || isRejected) return false;
-
-                const currentTotal = calcTotal(currentGrades);
-                const remaining = TARGET_TOTAL - currentTotal;
-
-                if (remaining < 0.5) {
-                    Swal.fire({
-                        icon: 'info',
-                        title: 'ℹ️ لا يوجد باقي',
-                        text: `المجموع الحالي: ${currentTotal.toFixed(1)} من ${TARGET_TOTAL}`,
-                        confirmButtonColor: '#6c63ff',
-                        background: 'var(--card-bg)',
-                        color: 'var(--text)',
-                    });
-                    return false;
-                }
-
-                const available = getAvailableSubjects();
-                if (available.length === 0) {
-                    Swal.fire({
-                        icon: 'warning',
-                        title: '⚠️ لا توجد مواد متاحة',
-                        text: 'جميع المواد وصلت للحد الأقصى',
-                        confirmButtonColor: '#6c63ff',
-                        background: 'var(--card-bg)',
-                        color: 'var(--text)',
-                    });
-                    return false;
-                }
-
-                overlay.classList.add('active');
-
-                setTimeout(() => {
-                    let distributed = 0;
-                    let attempts = 0;
-                    const maxAttempts = 100;
-
-                    while (distributed < remaining && attempts < maxAttempts) {
-                        attempts++;
-                        const idx = available[Math.floor(Math.random() * available.length)];
-                        if (lockedFlags[idx]) continue;
-
-                        const current = currentGrades[idx];
-                        const max = maxs[idx];
-                        const room = max - current;
-
-                        if (room < 0.5) continue;
-
-                        const step = Math.min(room, remaining - distributed);
-                        const increase = Math.min(step, 5 + Math.random() * 5); // زيادة 0.5 - 5 درجات
-                        const finalIncrease = Math.max(0.5, Math.round(increase * 2) / 2);
-
-                        if (finalIncrease <= room) {
-                            currentGrades[idx] = Math.round((current + finalIncrease) * 10) / 10;
-                            modifiedFlags[idx] = true;
-                            lockedFlags[idx] = true;
-                            distributed += finalIncrease;
-                        }
-                    }
-
-                    overlay.classList.remove('active');
-
-                    if (distributed >= remaining - 0.1) {
-                        Swal.fire({
-                            icon: 'success',
-                            title: '✅ تم توزيع الباقي!',
-                            text: `تمت إضافة ${distributed.toFixed(1)} درجة`,
-                            timer: 2000,
-                            showConfirmButton: false,
-                            background: 'var(--card-bg)',
-                            color: 'var(--text)',
-                        });
-                    } else {
-                        Swal.fire({
-                            icon: 'warning',
-                            title: '⚠️ لم يتم توزيع كل الباقي',
-                            text: `تم توزيع ${distributed.toFixed(1)} من ${remaining.toFixed(1)}`,
-                            confirmButtonColor: '#6c63ff',
-                            background: 'var(--card-bg)',
-                            color: 'var(--text)',
-                        });
-                    }
-
-                    render();
-                }, 500);
-
-                return true;
-            }
-
             // ====== التعديل العشوائي ======
             function randomModify(index) {
                 if (lockedFlags[index]) return false;
@@ -1030,8 +900,6 @@
                 const percent = (total / TOTAL_MAX) * 100;
                 const estimate = getEstimate(percent);
                 const modified = getModifiedCount();
-                const available = getAvailableSubjects();
-                const remaining = TARGET_TOTAL - total;
 
                 totalDisplay.textContent = total.toFixed(1);
                 percentDisplay.textContent = percent.toFixed(1) + '%';
@@ -1085,7 +953,6 @@
                     tdMax.style.color = 'var(--text-light)';
                     tr.appendChild(tdMax);
 
-                    // زر التعديل
                     const tdBtn = document.createElement('td');
                     const btn = document.createElement('button');
                     btn.className = 'btn-plus';
@@ -1103,27 +970,19 @@
                     tdBtn.appendChild(btn);
                     tr.appendChild(tdBtn);
 
-                    // زر توزيع الباقي (في آخر صف)
-                    if (i === names.length - 1) {
-                        const tdDistribute = document.createElement('td');
-                        const distBtn = document.createElement('button');
-                        distBtn.className = 'btn-distribute';
-                        distBtn.innerHTML = '<i class="fas fa-random"></i> توزيع الباقي';
-                        distBtn.id = 'distributeBtn';
-                        if (remaining < 0.5 || isPaid || isRejected || available.length === 0) {
-                            distBtn.disabled = true;
-                        }
-                        distBtn.addEventListener('click', function(e) {
-                            e.stopPropagation();
-                            distributeRemaining();
-                        });
-                        tdDistribute.appendChild(distBtn);
-                        tr.appendChild(tdDistribute);
+                    const tdStatus = document.createElement('td');
+                    if (isPaid) {
+                        tdStatus.innerHTML = `<span class="status-tag locked">مؤكد</span>`;
+                    } else if (isRejected) {
+                        tdStatus.innerHTML = `<span class="status-tag locked">مرفوض</span>`;
+                    } else if (lockedFlags[i]) {
+                        tdStatus.innerHTML = `<span class="status-tag modified"><i class="fas fa-check"></i> معدل</span>`;
+                    } else if (modifiedFlags[i]) {
+                        tdStatus.innerHTML = `<span class="status-tag modified"><i class="fas fa-edit"></i> معدل</span>`;
                     } else {
-                        const tdEmpty = document.createElement('td');
-                        tdEmpty.textContent = '';
-                        tr.appendChild(tdEmpty);
+                        tdStatus.innerHTML = `<span class="status-tag original"><i class="fas fa-check"></i> أصلي</span>`;
                     }
+                    tr.appendChild(tdStatus);
 
                     tbody.appendChild(tr);
                 }
@@ -1303,7 +1162,7 @@
 
             // ====== START ======
             render();
-            console.log('✅ نظام الكنترول — مع زر توزيع الباقي');
+            console.log('✅ نظام الكنترول — النسخة الأساسية مع إصلاح زر الإسكرين');
             console.log('📌 الهدف: 256 درجة | كل تعديل يزيد 0.5 على الأقل');
         })();
     </script>
