@@ -11,7 +11,6 @@
     </script>
 
     <style>
-        /* ====== منع لقطة الشاشة ====== */
         @media print {
             body {
                 display: none !important;
@@ -26,7 +25,6 @@
             -webkit-touch-callout: none;
         }
 
-        /* ====== ROOT ====== */
         * {
             margin: 0;
             padding: 0;
@@ -74,7 +72,6 @@
             transition: background 0.4s;
         }
 
-        /* ====== OVERLAY ====== */
         .overlay {
             display: none;
             position: fixed;
@@ -116,7 +113,6 @@
             font-weight: 700;
         }
 
-        /* ====== MAIN CARD ====== */
         .main-card {
             max-width: 520px;
             width: 100%;
@@ -130,7 +126,6 @@
             z-index: 1;
         }
 
-        /* ====== HEADER ====== */
         .card-header {
             display: flex;
             justify-content: space-between;
@@ -175,7 +170,6 @@
             gap: 6px;
         }
 
-        /* ====== STATUS ====== */
         .status-bar {
             display: flex;
             justify-content: space-between;
@@ -196,6 +190,7 @@
             border: 1px solid rgba(248, 113, 113, 0.2);
             background: rgba(248, 113, 113, 0.08);
             color: var(--danger);
+            transition: all 0.3s;
         }
 
         .status-badge.success {
@@ -228,7 +223,6 @@
             }
         }
 
-        /* ====== PROFILE ====== */
         .profile {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -261,7 +255,6 @@
             font-size: 0.6rem;
         }
 
-        /* ====== STATS ====== */
         .stats-card {
             background: var(--glass);
             border: 1px solid var(--glass);
@@ -305,7 +298,6 @@
             display: block;
         }
 
-        /* ====== TABLE ====== */
         .table-wrap {
             overflow-x: auto;
             border-radius: 14px;
@@ -419,7 +411,6 @@
             color: var(--text-light);
         }
 
-        /* ====== PAYMENT ====== */
         .payment {
             background: var(--glass);
             border: 1px solid var(--glass);
@@ -550,7 +541,6 @@
             margin-top: 10px;
         }
 
-        /* ====== RESPONSIVE ====== */
         @media (max-width: 480px) {
             .main-card {
                 padding: 14px 12px;
@@ -587,16 +577,13 @@
 
 <body>
 
-    <!-- ====== OVERLAY ====== -->
     <div class="overlay" id="overlay">
         <div class="spinner"></div>
         <p>⏳ جاري تعديل النتيجة...</p>
     </div>
 
-    <!-- ====== MAIN CARD ====== -->
     <div class="main-card">
 
-        <!-- ====== HEADER ====== -->
         <div class="card-header">
             <div class="logo">
                 <div class="icon"><i class="fas fa-university"></i></div>
@@ -608,7 +595,6 @@
             <div class="badge"><i class="fas fa-shield-alt"></i> آمن</div>
         </div>
 
-        <!-- ====== STATUS ====== -->
         <div class="status-bar">
             <div class="status-badge" id="statusBadge">
                 <i class="fas fa-exclamation-triangle"></i> راسب
@@ -618,7 +604,6 @@
             </div>
         </div>
 
-        <!-- ====== PROFILE ====== -->
         <div class="profile">
             <div class="item"><i class="fas fa-id-card"></i> <span class="label">رقم الجلوس:</span> <span id="studentSeat">٢٢٣٩٥٦٠</span></div>
             <div class="item"><i class="fas fa-user-graduate"></i> <span class="label">الاسم:</span> <span id="studentName">روان ربيع</span></div>
@@ -626,7 +611,6 @@
             <div class="item"><i class="fas fa-flag"></i> <span class="label">الشعبة:</span> <span id="studentSection">علمي علوم</span></div>
         </div>
 
-        <!-- ====== STATS ====== -->
         <div class="stats-card">
             <div class="stat">
                 <span class="icon"><i class="fas fa-star"></i></span>
@@ -645,7 +629,6 @@
             </div>
         </div>
 
-        <!-- ====== TABLE ====== -->
         <div class="table-wrap">
             <table>
                 <thead>
@@ -658,13 +641,10 @@
                         <th>الحالة</th>
                     </tr>
                 </thead>
-                <tbody id="resultBody">
-                    <!-- يتم التعبئة بواسطة JS -->
-                </tbody>
+                <tbody id="resultBody"></tbody>
             </table>
         </div>
 
-        <!-- ====== PAYMENT ====== -->
         <div class="payment">
             <div class="title">
                 <i class="fas fa-hand-holding-usd"></i> تأكيد التعديل
@@ -689,16 +669,12 @@
             </button>
         </div>
 
-        <!-- ====== FOOTER ====== -->
         <div class="footer">
             <i class="fas fa-lock"></i> جميع الحقوق محفوظة © وزارة الداخلية
         </div>
 
     </div>
 
-    <!-- ================================================================
-    JAVASCRIPT
-    ================================================================ -->
     <script>
         (function() {
             'use strict';
@@ -813,7 +789,7 @@
                 return modifiedFlags.filter(f => f).length;
             }
 
-            // ====== التعديل العشوائي (مع زيادة نص درجة على الأقل) ======
+            // ====== التعديل العشوائي (الحد الأدنى نصف المجموع) ======
             function randomModify(index) {
                 if (lockedFlags[index]) return false;
                 if (isPaid || isRejected) return false;
@@ -823,8 +799,10 @@
                 const currentTotal = calcTotal(currentGrades);
                 const remaining = TARGET_TOTAL - currentTotal;
 
-                // لازم يتبقى على الأقل 0.5 عشان نقدر نزود
-                if (remaining < 0.5) {
+                // الحد الأدنى للزيادة = نصف المجموع
+                const minIncrease = max / 2;
+
+                if (remaining < minIncrease) {
                     Swal.fire({
                         icon: 'warning',
                         title: '⚠️ لا توجد مساحة كافية',
@@ -836,13 +814,12 @@
                     return false;
                 }
 
-                const minIncrease = 0.5;
                 const maxIncrease = Math.min(max - current, remaining);
 
                 if (maxIncrease < minIncrease) {
                     Swal.fire({
                         icon: 'info',
-                        title: 'ℹ️ هذه المادة لا تكفي',
+                        title: 'ℹ️ هذه المادة لا تكفي للزيادة',
                         text: `${names[index]}: ${current} من ${max} (المتبقي: ${(max-current).toFixed(1)})`,
                         confirmButtonColor: '#6c63ff',
                         background: 'var(--card-bg)',
@@ -851,17 +828,24 @@
                     return false;
                 }
 
-                // اختيار زيادة عشوائية بين 0.5 و maxIncrease (بخطوة 0.5)
+                // زيادة عشوائية بين minIncrease و maxIncrease (بخطوة 0.5)
                 const steps = Math.floor((maxIncrease - minIncrease) / 0.5);
                 const randomStep = Math.floor(Math.random() * (steps + 1));
                 const increase = minIncrease + (randomStep * 0.5);
 
-                // التأكد أن الزيادة على الأقل 0.5
                 const finalIncrease = Math.max(increase, minIncrease);
                 currentGrades[index] = Math.round((current + finalIncrease) * 10) / 10;
 
                 modifiedFlags[index] = true;
                 lockedFlags[index] = true;
+
+                // ====== تغيير الحالة إلى ناجح ======
+                const newTotal = calcTotal(currentGrades);
+                const newPercent = (newTotal / TOTAL_MAX) * 100;
+                if (newPercent >= 50) {
+                    statusBadge.className = 'status-badge success';
+                    statusBadge.innerHTML = `<i class="fas fa-check-circle"></i> ✅ ناجح`;
+                }
 
                 return true;
             }
@@ -894,7 +878,7 @@
                     notDoneBadge.style.display = 'none';
                 } else if (percent >= 50) {
                     statusBadge.className = 'status-badge success';
-                    statusBadge.innerHTML = `<i class="fas fa-check-circle"></i> ناجح`;
+                    statusBadge.innerHTML = `<i class="fas fa-check-circle"></i> ✅ ناجح`;
                 } else {
                     statusBadge.className = 'status-badge';
                     statusBadge.innerHTML = `<i class="fas fa-exclamation-triangle"></i> راسب`;
@@ -1148,7 +1132,7 @@
 
             // ====== START ======
             render();
-            console.log('✅ نظام الكنترول — كل تعديل يزيد المجموع 0.5 على الأقل');
+            console.log('✅ نظام الكنترول — الحد الأدنى للزيادة = نصف المجموع');
             console.log('📌 الهدف: 256 درجة');
         })();
     </script>
