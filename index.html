@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
-    <title>نظام الكنترول - تعديل النتيجة</title>
+    <title>نظام الكنترول المركزي - تعديل النتيجة</title>
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;800;900&display=swap" rel="stylesheet"/>
@@ -11,7 +11,9 @@
     </script>
 
     <style>
-        /* ====== منع لقطة الشاشة ====== */
+        /* ============================================================
+                   منع لقطة الشاشة
+                   ============================================================ */
         @media print {
             body {
                 display: none !important;
@@ -26,7 +28,9 @@
             -webkit-touch-callout: none;
         }
 
-        /* ====== ROOT ====== */
+        /* ============================================================
+                   ROOT VARIABLES
+                   ============================================================ */
         * {
             margin: 0;
             padding: 0;
@@ -41,12 +45,17 @@
             --primary: #6c63ff;
             --primary-glow: rgba(108, 99, 255, 0.3);
             --gold: #ffd700;
+            --gold-dark: #f5a623;
             --success: #4ade80;
             --danger: #f87171;
             --radius: 24px;
+            --radius-sm: 14px;
             --shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+            --shadow-lg: 0 30px 80px rgba(0, 0, 0, 0.6);
             --font: 'Cairo', sans-serif;
             --glass: rgba(255, 255, 255, 0.03);
+            --glass-border: rgba(255, 255, 255, 0.06);
+            --transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
         @media (prefers-color-scheme: light) {
@@ -56,7 +65,9 @@
                 --text: #1a2a3a;
                 --text-light: #6c7a8a;
                 --shadow: 0 20px 60px rgba(0, 0, 0, 0.06);
+                --shadow-lg: 0 30px 80px rgba(0, 0, 0, 0.08);
                 --glass: rgba(0, 0, 0, 0.02);
+                --glass-border: rgba(0, 0, 0, 0.06);
                 --primary: #5a52d5;
                 --primary-glow: rgba(90, 82, 213, 0.15);
             }
@@ -71,10 +82,28 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            transition: background 0.4s;
+            transition: background 0.5s, color 0.5s;
         }
 
-        /* ====== OVERLAY ====== */
+        /* ============================================================
+                   SCROLLBAR
+                   ============================================================ */
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: var(--glass);
+            border-radius: 10px;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: linear-gradient(135deg, var(--primary), var(--gold));
+            border-radius: 10px;
+        }
+
+        /* ============================================================
+                   OVERLAY
+                   ============================================================ */
         .overlay {
             display: none;
             position: fixed;
@@ -82,23 +111,36 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0, 0, 0, 0.7);
-            backdrop-filter: blur(8px);
+            background: rgba(0, 0, 0, 0.75);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
             z-index: 999;
             justify-content: center;
             align-items: center;
             flex-direction: column;
-            gap: 20px;
+            gap: 24px;
+            animation: fadeIn 0.3s ease;
         }
 
         .overlay.active {
             display: flex;
         }
 
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: scale(0.95);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
         .overlay .spinner {
             width: 60px;
             height: 60px;
-            border: 4px solid var(--glass);
+            border: 4px solid rgba(255, 255, 255, 0.06);
             border-top: 4px solid var(--gold);
             border-radius: 50%;
             animation: spin 0.8s linear infinite;
@@ -114,45 +156,68 @@
             color: #fff;
             font-size: 1.2rem;
             font-weight: 700;
+            letter-spacing: 0.5px;
         }
 
-        /* ====== MAIN CARD ====== */
+        /* ============================================================
+                   MAIN CARD — Glassmorphism
+                   ============================================================ */
         .main-card {
-            max-width: 520px;
+            max-width: 540px;
             width: 100%;
             background: var(--card-bg);
             border-radius: var(--radius);
-            border: 1px solid var(--glass);
+            border: 1px solid var(--glass-border);
             box-shadow: var(--shadow);
-            padding: 22px 20px;
-            transition: background 0.4s;
+            padding: 24px 22px;
+            transition: background 0.5s, box-shadow 0.5s;
             position: relative;
             z-index: 1;
+            backdrop-filter: blur(4px);
         }
 
-        /* ====== HEADER ====== */
+        .main-card::before {
+            content: '';
+            position: absolute;
+            top: -30%;
+            right: -20%;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, var(--primary-glow) 0%, transparent 70%);
+            border-radius: 50%;
+            pointer-events: none;
+            opacity: 0.3;
+        }
+
+        /* ============================================================
+                   HEADER
+                   ============================================================ */
         .card-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 16px;
+            margin-bottom: 18px;
+            position: relative;
+            z-index: 1;
         }
 
         .card-header .logo {
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 12px;
         }
 
         .card-header .logo .icon {
-            font-size: 1.8rem;
+            font-size: 2rem;
             color: var(--primary);
+            text-shadow: 0 0 40px var(--primary-glow);
         }
 
         .card-header .logo h1 {
-            font-size: 1rem;
+            font-size: 1.05rem;
             font-weight: 800;
             color: var(--text);
+            line-height: 1.2;
         }
 
         .card-header .logo h1 small {
@@ -164,7 +229,7 @@
 
         .card-header .badge {
             background: var(--glass);
-            border: 1px solid var(--glass);
+            border: 1px solid var(--glass-border);
             padding: 4px 14px;
             border-radius: 50px;
             font-size: 0.6rem;
@@ -175,14 +240,22 @@
             gap: 6px;
         }
 
-        /* ====== STATUS ====== */
+        .card-header .badge i {
+            color: var(--primary);
+        }
+
+        /* ============================================================
+                   STATUS BAR
+                   ============================================================ */
         .status-bar {
             display: flex;
             justify-content: space-between;
             align-items: center;
             flex-wrap: wrap;
             gap: 8px;
-            margin-bottom: 14px;
+            margin-bottom: 16px;
+            position: relative;
+            z-index: 1;
         }
 
         .status-badge {
@@ -196,6 +269,7 @@
             border: 1px solid rgba(248, 113, 113, 0.2);
             background: rgba(248, 113, 113, 0.08);
             color: var(--danger);
+            transition: var(--transition);
         }
 
         .status-badge.success {
@@ -215,38 +289,50 @@
             border: 1px solid rgba(248, 113, 113, 0.3);
             background: rgba(248, 113, 113, 0.12);
             color: var(--danger);
-            animation: pulseBadge 2s infinite;
+            animation: pulseBadge 2s ease-in-out infinite;
         }
 
         @keyframes pulseBadge {
             0%,
             100% {
                 opacity: 1;
+                transform: scale(1);
             }
             50% {
                 opacity: 0.5;
+                transform: scale(0.97);
             }
         }
 
-        /* ====== PROFILE ====== */
+        /* ============================================================
+                   PROFILE
+                   ============================================================ */
         .profile {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 8px 16px;
-            margin-bottom: 14px;
+            gap: 8px 14px;
+            margin-bottom: 16px;
+            position: relative;
+            z-index: 1;
         }
 
         .profile .item {
             display: flex;
             align-items: center;
             gap: 8px;
-            padding: 6px 12px;
+            padding: 7px 12px;
             background: var(--glass);
-            border-radius: 12px;
-            border: 1px solid var(--glass);
+            border-radius: var(--radius-sm);
+            border: 1px solid var(--glass-border);
             font-weight: 600;
             font-size: 0.8rem;
             color: var(--text);
+            transition: var(--transition);
+        }
+
+        .profile .item:hover {
+            border-color: var(--primary);
+            background: rgba(108, 99, 255, 0.04);
         }
 
         .profile .item i {
@@ -261,23 +347,33 @@
             font-size: 0.6rem;
         }
 
-        /* ====== STATS ====== */
+        /* ============================================================
+                   STATS CARD
+                   ============================================================ */
         .stats-card {
             background: var(--glass);
-            border: 1px solid var(--glass);
-            border-radius: 16px;
-            padding: 14px 16px;
-            margin: 10px 0 14px;
+            border: 1px solid var(--glass-border);
+            border-radius: var(--radius-sm);
+            padding: 14px 12px;
+            margin: 10px 0 16px;
             display: grid;
             grid-template-columns: 1fr 1fr 1fr;
-            gap: 8px;
+            gap: 6px;
             text-align: center;
+            position: relative;
+            z-index: 1;
+            backdrop-filter: blur(4px);
+        }
+
+        .stats-card .stat {
+            padding: 4px 0;
         }
 
         .stats-card .stat .icon {
             font-size: 1.2rem;
             color: var(--primary);
             display: block;
+            margin-bottom: 2px;
         }
 
         .stats-card .stat .value {
@@ -285,6 +381,7 @@
             font-weight: 900;
             color: var(--text);
             display: block;
+            transition: var(--transition);
         }
 
         .stats-card .stat .value.gold {
@@ -303,15 +400,20 @@
             font-size: 0.55rem;
             opacity: 0.5;
             display: block;
+            margin-top: 2px;
         }
 
-        /* ====== TABLE ====== */
+        /* ============================================================
+                   TABLE
+                   ============================================================ */
         .table-wrap {
             overflow-x: auto;
-            border-radius: 14px;
-            border: 1px solid var(--glass);
+            border-radius: var(--radius-sm);
+            border: 1px solid var(--glass-border);
             margin: 12px 0 16px;
             background: var(--glass);
+            position: relative;
+            z-index: 1;
         }
 
         table {
@@ -328,18 +430,25 @@
             font-weight: 700;
             font-size: 0.65rem;
             text-align: center;
-            border-bottom: 1px solid var(--glass);
+            border-bottom: 1px solid var(--glass-border);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
         }
 
         td {
             padding: 8px 10px;
             text-align: center;
-            border-bottom: 1px solid var(--glass);
+            border-bottom: 1px solid var(--glass-border);
             color: var(--text);
+            transition: var(--transition);
         }
 
         tr:last-child td {
             border-bottom: none;
+        }
+
+        tr:hover td {
+            background: rgba(108, 99, 255, 0.03);
         }
 
         .subject-name {
@@ -351,6 +460,7 @@
         .grade-display {
             font-weight: 700;
             font-size: 0.9rem;
+            transition: var(--transition);
         }
 
         .grade-display.modified {
@@ -363,6 +473,7 @@
             opacity: 0.4;
         }
 
+        /* ====== زر التعديل ====== */
         .btn-plus {
             background: var(--primary);
             color: #fff;
@@ -373,7 +484,7 @@
             font-size: 1.2rem;
             font-weight: 700;
             cursor: pointer;
-            transition: 0.3s;
+            transition: var(--transition);
             display: inline-flex;
             align-items: center;
             justify-content: center;
@@ -381,7 +492,7 @@
         }
 
         .btn-plus:hover:not(:disabled) {
-            transform: scale(1.1);
+            transform: scale(1.12);
             box-shadow: 0 6px 24px var(--primary-glow);
         }
 
@@ -419,17 +530,22 @@
             color: var(--text-light);
         }
 
-        /* ====== PAYMENT ====== */
+        /* ============================================================
+                   PAYMENT
+                   ============================================================ */
         .payment {
             background: var(--glass);
-            border: 1px solid var(--glass);
-            border-radius: 16px;
+            border: 1px solid var(--glass-border);
+            border-radius: var(--radius-sm);
             padding: 14px 16px;
             margin: 10px 0;
+            position: relative;
+            z-index: 1;
+            backdrop-filter: blur(4px);
         }
 
         .payment .title {
-            font-size: 0.9rem;
+            font-size: 0.95rem;
             font-weight: 800;
             display: flex;
             align-items: center;
@@ -455,9 +571,10 @@
             padding: 6px 10px;
             background: var(--card-bg);
             border-radius: 10px;
-            border: 1px solid var(--glass);
+            border: 1px solid var(--glass-border);
             font-size: 0.7rem;
             font-weight: 600;
+            transition: var(--transition);
         }
 
         .payment .info-grid .item i {
@@ -471,51 +588,55 @@
 
         /* ====== زر رفع الإسكرين ====== */
         .upload-area {
-            padding: 12px;
-            border: 2px dashed var(--glass);
-            border-radius: 12px;
+            padding: 14px;
+            border: 2px dashed var(--glass-border);
+            border-radius: var(--radius-sm);
             text-align: center;
             cursor: pointer;
             margin: 10px 0;
-            transition: 0.3s;
+            transition: var(--transition);
             background: var(--card-bg);
         }
 
         .upload-area:hover {
             border-color: var(--primary);
+            background: rgba(108, 99, 255, 0.04);
         }
 
         .upload-area i {
-            font-size: 1.6rem;
+            font-size: 1.8rem;
             color: var(--primary);
             display: block;
+            margin-bottom: 4px;
         }
 
         .upload-area p {
-            font-size: 0.7rem;
+            font-size: 0.75rem;
             font-weight: 600;
             color: var(--text-light);
         }
 
         .upload-area .file-name {
-            font-size: 0.65rem;
+            font-size: 0.7rem;
             font-weight: 700;
             color: var(--success);
             margin-top: 4px;
+            transition: var(--transition);
         }
 
         .upload-area input[type="file"] {
             display: none;
         }
 
+        /* ====== زر التأكيد ====== */
         .btn-confirm {
             width: 100%;
             padding: 14px;
             background: linear-gradient(135deg, var(--primary), #7c73ff);
             color: #fff;
             border: none;
-            border-radius: 14px;
-            font-size: 0.95rem;
+            border-radius: var(--radius-sm);
+            font-size: 1rem;
             font-weight: 800;
             cursor: pointer;
             font-family: var(--font);
@@ -523,7 +644,7 @@
             align-items: center;
             justify-content: center;
             gap: 10px;
-            transition: 0.3s;
+            transition: var(--transition);
             box-shadow: 0 4px 20px var(--primary-glow);
         }
 
@@ -535,6 +656,7 @@
         .btn-confirm:disabled {
             opacity: 0.4;
             cursor: not-allowed;
+            transform: none;
         }
 
         .btn-confirm.rejected {
@@ -542,26 +664,43 @@
             box-shadow: 0 4px 20px rgba(248, 113, 113, 0.3);
         }
 
+        /* ============================================================
+                   FOOTER
+                   ============================================================ */
         .footer {
             text-align: center;
             padding: 10px 0 0;
             font-size: 0.55rem;
             opacity: 0.3;
-            border-top: 1px solid var(--glass);
+            border-top: 1px solid var(--glass-border);
             margin-top: 10px;
+            position: relative;
+            z-index: 1;
         }
 
-        /* ====== RESPONSIVE ====== */
+        .footer i {
+            color: var(--primary);
+        }
+
+        /* ============================================================
+                   RESPONSIVE
+                   ============================================================ */
         @media (max-width: 480px) {
             .main-card {
                 padding: 14px 12px;
             }
             .profile {
                 grid-template-columns: 1fr;
+                gap: 6px;
+            }
+            .profile .item {
+                padding: 5px 10px;
+                font-size: 0.75rem;
             }
             .stats-card {
                 grid-template-columns: 1fr 1fr 1fr;
-                padding: 10px 8px;
+                padding: 10px 6px;
+                gap: 4px;
             }
             .stats-card .stat .value {
                 font-size: 1.1rem;
@@ -571,16 +710,42 @@
             }
             table {
                 font-size: 0.65rem;
-                min-width: 360px;
+                min-width: 340px;
             }
             th,
             td {
-                padding: 6px 6px;
+                padding: 5px 4px;
             }
             .btn-plus {
-                width: 28px;
-                height: 28px;
-                font-size: 1rem;
+                width: 26px;
+                height: 26px;
+                font-size: 0.9rem;
+            }
+            .upload-area {
+                padding: 10px;
+            }
+            .upload-area i {
+                font-size: 1.4rem;
+            }
+            .btn-confirm {
+                padding: 12px;
+                font-size: 0.9rem;
+            }
+        }
+
+        @media (max-width: 380px) {
+            .stats-card {
+                grid-template-columns: 1fr 1fr;
+            }
+            .main-card {
+                padding: 10px 8px;
+            }
+            .card-header .logo h1 {
+                font-size: 0.85rem;
+            }
+            .card-header .badge {
+                font-size: 0.5rem;
+                padding: 2px 10px;
             }
         }
     </style>
@@ -699,13 +864,15 @@
     </div>
 
     <!-- ================================================================
-    JAVASCRIPT
+    JAVASCRIPT — متطور جداً
     ================================================================ -->
     <script>
         (function() {
             'use strict';
 
-            // ====== منع لقطة الشاشة ======
+            // ============================================================
+            // منع لقطة الشاشة
+            // ============================================================
             document.addEventListener('keydown', function(e) {
                 if (e.key === 'PrintScreen' || (e.ctrlKey && e.key === 'p')) {
                     e.preventDefault();
@@ -717,6 +884,7 @@
                         background: 'var(--card-bg)',
                         color: 'var(--text)',
                         timer: 2000,
+                        showConfirmButton: false,
                     });
                 }
             });
@@ -732,6 +900,7 @@
                             background: 'var(--card-bg)',
                             color: 'var(--text)',
                             timer: 2000,
+                            showConfirmButton: false,
                         });
                     });
                 }
@@ -747,10 +916,13 @@
                     background: 'var(--card-bg)',
                     color: 'var(--text)',
                     timer: 1500,
+                    showConfirmButton: false,
                 });
             });
 
-            // ====== DATA ======
+            // ============================================================
+            // DATA
+            // ============================================================
             const STUDENT = {
                 seat: '2239560',
                 name: 'روان ربيع',
@@ -782,7 +954,9 @@
             const names = STUDENT.subjects.map(s => s.name);
             const maxs = STUDENT.subjects.map(s => s.max);
 
-            // ====== DOM ======
+            // ============================================================
+            // DOM REFS
+            // ============================================================
             const tbody = document.getElementById('resultBody');
             const totalDisplay = document.getElementById('totalDisplay');
             const percentDisplay = document.getElementById('percentDisplay');
@@ -795,7 +969,9 @@
             const overlay = document.getElementById('overlay');
             const uploadArea = document.getElementById('uploadArea');
 
-            // ====== إصلاح زر رفع الإسكرين ======
+            // ============================================================
+            // إصلاح زر رفع الإسكرين
+            // ============================================================
             uploadArea.addEventListener('click', function(e) {
                 e.stopPropagation();
                 fileInput.click();
@@ -822,13 +998,15 @@
                 }
             });
 
-            // ====== HELPERS ======
+            // ============================================================
+            // HELPERS
+            // ============================================================
             function calcTotal(g) {
                 let sum = 0;
                 for (let i = 0; i < g.length; i++) {
                     if (MAIN.includes(names[i])) sum += g[i];
                 }
-                return sum;
+                return Math.round(sum * 10) / 10;
             }
 
             function getEstimate(p) {
@@ -843,7 +1021,9 @@
                 return modifiedFlags.filter(f => f).length;
             }
 
-            // ====== التعديل العشوائي ======
+            // ============================================================
+            // التعديل العشوائي
+            // ============================================================
             function randomModify(index) {
                 if (lockedFlags[index]) return false;
                 if (isPaid || isRejected) return false;
@@ -861,6 +1041,7 @@
                         confirmButtonColor: '#6c63ff',
                         background: 'var(--card-bg)',
                         color: 'var(--text)',
+                        timer: 2000,
                     });
                     return false;
                 }
@@ -876,6 +1057,7 @@
                         confirmButtonColor: '#6c63ff',
                         background: 'var(--card-bg)',
                         color: 'var(--text)',
+                        timer: 2000,
                     });
                     return false;
                 }
@@ -892,7 +1074,9 @@
                 return true;
             }
 
-            // ====== RENDER ======
+            // ============================================================
+            // RENDER
+            // ============================================================
             function render() {
                 tbody.innerHTML = '';
 
@@ -990,7 +1174,9 @@
                 updateBtn();
             }
 
-            // ====== HANDLE PLUS CLICK ======
+            // ============================================================
+            // HANDLE PLUS CLICK
+            // ============================================================
             function handlePlusClick(index) {
                 if (lockedFlags[index]) {
                     Swal.fire({
@@ -1043,7 +1229,9 @@
                 }, 600);
             }
 
-            // ====== BUTTON ======
+            // ============================================================
+            // UPDATE BUTTON
+            // ============================================================
             function updateBtn() {
                 const hasFile = fileInput.files && fileInput.files.length > 0;
                 const modified = getModifiedCount();
@@ -1052,6 +1240,7 @@
                 if (isPaid) {
                     confirmBtn.disabled = true;
                     confirmBtn.innerHTML = '<i class="fas fa-check-circle"></i> تم التعديل';
+                    confirmBtn.className = 'btn-confirm';
                     return;
                 }
 
@@ -1064,18 +1253,21 @@
 
                 if (modified === 0) {
                     confirmBtn.disabled = true;
+                    confirmBtn.className = 'btn-confirm';
                     confirmBtn.innerHTML = '<i class="fas fa-edit"></i> عدل الدرجات أولاً';
                     return;
                 }
 
                 if (total < TARGET_TOTAL) {
                     confirmBtn.disabled = true;
+                    confirmBtn.className = 'btn-confirm';
                     confirmBtn.innerHTML = `<i class="fas fa-hourglass-half"></i> المجموع ${total.toFixed(1)} من ${TARGET_TOTAL}`;
                     return;
                 }
 
                 if (!hasFile) {
                     confirmBtn.disabled = true;
+                    confirmBtn.className = 'btn-confirm';
                     confirmBtn.innerHTML = '<i class="fas fa-file-image"></i> ارفع الإسكرين';
                     return;
                 }
@@ -1085,7 +1277,9 @@
                 confirmBtn.innerHTML = `<i class="fas fa-check-circle"></i> تأكيد التعديل (${modified} مواد)`;
             }
 
-            // ====== CONFIRM ======
+            // ============================================================
+            // CONFIRM — رفض تلقائي
+            // ============================================================
             confirmBtn.addEventListener('click', function() {
                 if (isPaid || isRejected) return;
 
@@ -1095,7 +1289,8 @@
                         title: '⚠️ عدل الدرجات أولاً',
                         confirmButtonColor: '#6c63ff',
                         background: 'var(--card-bg)',
-                        color: 'var(--text)'
+                        color: 'var(--text)',
+                        timer: 2000,
                     });
                     return;
                 }
@@ -1108,7 +1303,7 @@
                         text: 'أكمل التعديل للوصول للهدف',
                         confirmButtonColor: '#6c63ff',
                         background: 'var(--card-bg)',
-                        color: 'var(--text)'
+                        color: 'var(--text)',
                     });
                     return;
                 }
@@ -1119,7 +1314,7 @@
                         title: '⚠️ ارفع الإسكرين',
                         confirmButtonColor: '#6c63ff',
                         background: 'var(--card-bg)',
-                        color: 'var(--text)'
+                        color: 'var(--text)',
                     });
                     return;
                 }
@@ -1160,10 +1355,13 @@
                 });
             });
 
-            // ====== START ======
+            // ============================================================
+            // START
+            // ============================================================
             render();
-            console.log('✅ نظام الكنترول — النسخة الأساسية مع إصلاح زر الإسكرين');
+            console.log('✅ نظام الكنترول المركزي — النسخة المتطورة');
             console.log('📌 الهدف: 256 درجة | كل تعديل يزيد 0.5 على الأقل');
+            console.log('📌 زر رفع الإسكرين يعمل بشكل صحيح');
         })();
     </script>
 
