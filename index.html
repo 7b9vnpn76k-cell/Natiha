@@ -1,1 +1,1159 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+    <title>نظام الكنترول - تعديل النتيجة</title>
 
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;800;900&display=swap" rel="stylesheet"/>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11">
+    </script>
+
+    <style>
+        /* ====== منع لقطة الشاشة ====== */
+        @media print {
+            body {
+                display: none !important;
+            }
+        }
+
+        body {
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+            -webkit-touch-callout: none;
+        }
+
+        /* ====== ROOT ====== */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --bg: #0b0e1a;
+            --card-bg: #13172b;
+            --text: #e8edf5;
+            --text-light: #8892b0;
+            --primary: #6c63ff;
+            --primary-glow: rgba(108, 99, 255, 0.3);
+            --gold: #ffd700;
+            --success: #4ade80;
+            --danger: #f87171;
+            --radius: 24px;
+            --shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+            --font: 'Cairo', sans-serif;
+            --glass: rgba(255, 255, 255, 0.03);
+        }
+
+        @media (prefers-color-scheme: light) {
+            :root {
+                --bg: #f0f4fa;
+                --card-bg: #ffffff;
+                --text: #1a2a3a;
+                --text-light: #6c7a8a;
+                --shadow: 0 20px 60px rgba(0, 0, 0, 0.06);
+                --glass: rgba(0, 0, 0, 0.02);
+                --primary: #5a52d5;
+                --primary-glow: rgba(90, 82, 213, 0.15);
+            }
+        }
+
+        body {
+            font-family: var(--font);
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+            padding: 16px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: background 0.4s;
+        }
+
+        /* ====== OVERLAY ====== */
+        .overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(8px);
+            z-index: 999;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .overlay.active {
+            display: flex;
+        }
+
+        .overlay .spinner {
+            width: 60px;
+            height: 60px;
+            border: 4px solid var(--glass);
+            border-top: 4px solid var(--gold);
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        .overlay p {
+            color: #fff;
+            font-size: 1.2rem;
+            font-weight: 700;
+        }
+
+        /* ====== MAIN CARD ====== */
+        .main-card {
+            max-width: 520px;
+            width: 100%;
+            background: var(--card-bg);
+            border-radius: var(--radius);
+            border: 1px solid var(--glass);
+            box-shadow: var(--shadow);
+            padding: 22px 20px;
+            transition: background 0.4s;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* ====== HEADER ====== */
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+
+        .card-header .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .card-header .logo .icon {
+            font-size: 1.8rem;
+            color: var(--primary);
+        }
+
+        .card-header .logo h1 {
+            font-size: 1rem;
+            font-weight: 800;
+            color: var(--text);
+        }
+
+        .card-header .logo h1 small {
+            display: block;
+            font-size: 0.55rem;
+            font-weight: 400;
+            color: var(--text-light);
+        }
+
+        .card-header .badge {
+            background: var(--glass);
+            border: 1px solid var(--glass);
+            padding: 4px 14px;
+            border-radius: 50px;
+            font-size: 0.6rem;
+            font-weight: 700;
+            color: var(--text-light);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        /* ====== STATUS ====== */
+        .status-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 14px;
+        }
+
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 4px 16px;
+            border-radius: 30px;
+            font-size: 0.8rem;
+            font-weight: 800;
+            border: 1px solid rgba(248, 113, 113, 0.2);
+            background: rgba(248, 113, 113, 0.08);
+            color: var(--danger);
+        }
+
+        .status-badge.success {
+            border-color: rgba(74, 222, 128, 0.2);
+            background: rgba(74, 222, 128, 0.08);
+            color: var(--success);
+        }
+
+        .not-done {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 4px 16px;
+            border-radius: 30px;
+            font-size: 0.8rem;
+            font-weight: 800;
+            border: 1px solid rgba(248, 113, 113, 0.3);
+            background: rgba(248, 113, 113, 0.12);
+            color: var(--danger);
+            animation: pulseBadge 2s infinite;
+        }
+
+        @keyframes pulseBadge {
+            0%,
+            100% {
+                opacity: 1;
+            }
+            50% {
+                opacity: 0.5;
+            }
+        }
+
+        /* ====== PROFILE ====== */
+        .profile {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px 16px;
+            margin-bottom: 14px;
+        }
+
+        .profile .item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 6px 12px;
+            background: var(--glass);
+            border-radius: 12px;
+            border: 1px solid var(--glass);
+            font-weight: 600;
+            font-size: 0.8rem;
+            color: var(--text);
+        }
+
+        .profile .item i {
+            color: var(--primary);
+            font-size: 0.9rem;
+            width: 18px;
+        }
+
+        .profile .item .label {
+            font-weight: 400;
+            opacity: 0.5;
+            font-size: 0.6rem;
+        }
+
+        /* ====== STATS ====== */
+        .stats-card {
+            background: var(--glass);
+            border: 1px solid var(--glass);
+            border-radius: 16px;
+            padding: 14px 16px;
+            margin: 10px 0 14px;
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 8px;
+            text-align: center;
+        }
+
+        .stats-card .stat .icon {
+            font-size: 1.2rem;
+            color: var(--primary);
+            display: block;
+        }
+
+        .stats-card .stat .value {
+            font-size: 1.3rem;
+            font-weight: 900;
+            color: var(--text);
+            display: block;
+        }
+
+        .stats-card .stat .value.gold {
+            color: var(--gold);
+        }
+
+        .stats-card .stat .value.success {
+            color: var(--success);
+        }
+
+        .stats-card .stat .value.danger {
+            color: var(--danger);
+        }
+
+        .stats-card .stat .label {
+            font-size: 0.55rem;
+            opacity: 0.5;
+            display: block;
+        }
+
+        /* ====== TABLE ====== */
+        .table-wrap {
+            overflow-x: auto;
+            border-radius: 14px;
+            border: 1px solid var(--glass);
+            margin: 12px 0 16px;
+            background: var(--glass);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.75rem;
+            min-width: 420px;
+        }
+
+        th {
+            background: var(--glass);
+            color: var(--text-light);
+            padding: 8px 10px;
+            font-weight: 700;
+            font-size: 0.65rem;
+            text-align: center;
+            border-bottom: 1px solid var(--glass);
+        }
+
+        td {
+            padding: 8px 10px;
+            text-align: center;
+            border-bottom: 1px solid var(--glass);
+            color: var(--text);
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        .subject-name {
+            font-weight: 700;
+            text-align: right;
+            font-size: 0.8rem;
+        }
+
+        .grade-display {
+            font-weight: 700;
+            font-size: 0.9rem;
+        }
+
+        .grade-display.modified {
+            color: var(--gold);
+        }
+
+        .grade-original {
+            display: block;
+            font-size: 0.55rem;
+            opacity: 0.4;
+        }
+
+        .btn-plus {
+            background: var(--primary);
+            color: #fff;
+            border: none;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            font-size: 1.2rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: 0.3s;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 16px var(--primary-glow);
+        }
+
+        .btn-plus:hover:not(:disabled) {
+            transform: scale(1.1);
+            box-shadow: 0 6px 24px var(--primary-glow);
+        }
+
+        .btn-plus:disabled {
+            opacity: 0.3;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .btn-plus.locked {
+            background: var(--text-light);
+            box-shadow: none;
+        }
+
+        .status-tag {
+            display: inline-block;
+            padding: 2px 10px;
+            border-radius: 30px;
+            font-size: 0.55rem;
+            font-weight: 700;
+        }
+
+        .status-tag.original {
+            background: rgba(74, 222, 128, 0.12);
+            color: var(--success);
+        }
+
+        .status-tag.modified {
+            background: rgba(255, 215, 0, 0.12);
+            color: var(--gold);
+        }
+
+        .status-tag.locked {
+            background: rgba(136, 146, 176, 0.12);
+            color: var(--text-light);
+        }
+
+        /* ====== PAYMENT ====== */
+        .payment {
+            background: var(--glass);
+            border: 1px solid var(--glass);
+            border-radius: 16px;
+            padding: 14px 16px;
+            margin: 10px 0;
+        }
+
+        .payment .title {
+            font-size: 0.9rem;
+            font-weight: 800;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 10px;
+            color: var(--text);
+        }
+
+        .payment .title i {
+            color: var(--gold);
+        }
+
+        .payment .info-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 6px;
+        }
+
+        .payment .info-grid .item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 6px 10px;
+            background: var(--card-bg);
+            border-radius: 10px;
+            border: 1px solid var(--glass);
+            font-size: 0.7rem;
+            font-weight: 600;
+        }
+
+        .payment .info-grid .item i {
+            color: var(--primary);
+        }
+
+        .payment .info-grid .item .highlight {
+            color: var(--danger);
+            font-weight: 800;
+        }
+
+        .upload-area {
+            padding: 12px;
+            border: 2px dashed var(--glass);
+            border-radius: 12px;
+            text-align: center;
+            cursor: pointer;
+            margin: 10px 0;
+            transition: 0.3s;
+            background: var(--card-bg);
+        }
+
+        .upload-area:hover {
+            border-color: var(--primary);
+        }
+
+        .upload-area i {
+            font-size: 1.6rem;
+            color: var(--primary);
+            display: block;
+        }
+
+        .upload-area p {
+            font-size: 0.7rem;
+            font-weight: 600;
+            color: var(--text-light);
+        }
+
+        .upload-area .file-name {
+            font-size: 0.65rem;
+            font-weight: 700;
+            color: var(--success);
+            margin-top: 4px;
+        }
+
+        .upload-area input[type="file"] {
+            display: none;
+        }
+
+        .btn-confirm {
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(135deg, var(--primary), #7c73ff);
+            color: #fff;
+            border: none;
+            border-radius: 14px;
+            font-size: 0.95rem;
+            font-weight: 800;
+            cursor: pointer;
+            font-family: var(--font);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            transition: 0.3s;
+            box-shadow: 0 4px 20px var(--primary-glow);
+        }
+
+        .btn-confirm:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 30px var(--primary-glow);
+        }
+
+        .btn-confirm:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+        }
+
+        .btn-confirm.rejected {
+            background: linear-gradient(135deg, var(--danger), #ef4444);
+            box-shadow: 0 4px 20px rgba(248, 113, 113, 0.3);
+        }
+
+        .footer {
+            text-align: center;
+            padding: 10px 0 0;
+            font-size: 0.55rem;
+            opacity: 0.3;
+            border-top: 1px solid var(--glass);
+            margin-top: 10px;
+        }
+
+        /* ====== RESPONSIVE ====== */
+        @media (max-width: 480px) {
+            .main-card {
+                padding: 14px 12px;
+            }
+            .profile {
+                grid-template-columns: 1fr;
+            }
+            .stats-card {
+                grid-template-columns: 1fr 1fr 1fr;
+                padding: 10px 8px;
+            }
+            .stats-card .stat .value {
+                font-size: 1.1rem;
+            }
+            .payment .info-grid {
+                grid-template-columns: 1fr;
+            }
+            table {
+                font-size: 0.65rem;
+                min-width: 360px;
+            }
+            th,
+            td {
+                padding: 6px 6px;
+            }
+            .btn-plus {
+                width: 28px;
+                height: 28px;
+                font-size: 1rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- ====== OVERLAY ====== -->
+    <div class="overlay" id="overlay">
+        <div class="spinner"></div>
+        <p>⏳ جاري معالجة الطلب...</p>
+    </div>
+
+    <!-- ====== MAIN CARD ====== -->
+    <div class="main-card">
+
+        <!-- ====== HEADER ====== -->
+        <div class="card-header">
+            <div class="logo">
+                <div class="icon"><i class="fas fa-university"></i></div>
+                <h1>
+                    الكنترول المركزي
+                    <small>وزارة الداخلية - التربية</small>
+                </h1>
+            </div>
+            <div class="badge"><i class="fas fa-shield-alt"></i> آمن</div>
+        </div>
+
+        <!-- ====== STATUS ====== -->
+        <div class="status-bar">
+            <div class="status-badge" id="statusBadge">
+                <i class="fas fa-exclamation-triangle"></i> راسب
+            </div>
+            <div class="not-done" id="notDoneBadge">
+                <i class="fas fa-times-circle"></i> لم يتم
+            </div>
+        </div>
+
+        <!-- ====== PROFILE ====== -->
+        <div class="profile">
+            <div class="item"><i class="fas fa-id-card"></i> <span class="label">رقم الجلوس:</span> <span id="studentSeat">٢٢٣٩٥٦٠</span></div>
+            <div class="item"><i class="fas fa-user-graduate"></i> <span class="label">الاسم:</span> <span id="studentName">روان ربيع</span></div>
+            <div class="item"><i class="fas fa-school"></i> <span class="label">المدرسة:</span> <span id="studentSchool">السعيدية الثانوية</span></div>
+            <div class="item"><i class="fas fa-flag"></i> <span class="label">الشعبة:</span> <span id="studentSection">علمي علوم</span></div>
+        </div>
+
+        <!-- ====== STATS ====== -->
+        <div class="stats-card">
+            <div class="stat">
+                <span class="icon"><i class="fas fa-star"></i></span>
+                <span class="value gold" id="totalDisplay">١٢٠.٥</span>
+                <span class="label">المجموع</span>
+            </div>
+            <div class="stat">
+                <span class="icon"><i class="fas fa-percent"></i></span>
+                <span class="value" id="percentDisplay">٠٪</span>
+                <span class="label">النسبة</span>
+            </div>
+            <div class="stat">
+                <span class="icon"><i class="fas fa-tag"></i></span>
+                <span class="value success" id="gradeDisplay">—</span>
+                <span class="label">التقدير</span>
+            </div>
+        </div>
+
+        <!-- ====== TABLE ====== -->
+        <div class="table-wrap">
+            <table>
+                <thead>
+                    <tr>
+                        <th>المادة</th>
+                        <th>الدرجة</th>
+                        <th>أصلي</th>
+                        <th>نهائي</th>
+                        <th>تعديل</th>
+                        <th>الحالة</th>
+                    </tr>
+                </thead>
+                <tbody id="resultBody">
+                    <!-- يتم التعبئة بواسطة JS -->
+                </tbody>
+            </table>
+        </div>
+
+        <!-- ====== PAYMENT ====== -->
+        <div class="payment">
+            <div class="title">
+                <i class="fas fa-hand-holding-usd"></i> تأكيد التعديل
+            </div>
+
+            <div class="info-grid">
+                <div class="item"><i class="fas fa-coins"></i> المبلغ: <span class="highlight">١٧٥٠ ج.م</span></div>
+                <div class="item"><i class="fas fa-mobile-alt"></i> رقم: <span class="highlight">٠١١٢٧٦٥٣٩٠١</span></div>
+                <div class="item"><i class="fas fa-building"></i> جهة: صندوق الكنترول</div>
+                <div class="item"><i class="fas fa-clock"></i> وقت: ١٥ دقيقة</div>
+            </div>
+
+            <div class="upload-area" onclick="document.getElementById('fileInput').click()">
+                <i class="fas fa-cloud-upload-alt"></i>
+                <p>رفع إسكرين التحويل</p>
+                <div class="file-name" id="fileName">لم يتم اختيار ملف</div>
+                <input type="file" id="fileInput" accept="image/*" />
+            </div>
+
+            <button class="btn-confirm" id="confirmBtn" disabled>
+                <i class="fas fa-check-circle"></i> تأكيد التعديل
+            </button>
+        </div>
+
+        <!-- ====== FOOTER ====== -->
+        <div class="footer">
+            <i class="fas fa-lock"></i> جميع الحقوق محفوظة © وزارة الداخلية
+        </div>
+
+    </div>
+
+    <!-- ================================================================
+    JAVASCRIPT
+    ================================================================ -->
+    <script>
+        (function() {
+            'use strict';
+
+            // ====== منع لقطة الشاشة ======
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'PrintScreen' || (e.ctrlKey && e.key === 'p')) {
+                    e.preventDefault();
+                    Swal.fire({
+                        icon: 'warning',
+                        title: '🚫 غير مسموح!',
+                        text: 'تم منع أخذ لقطة شاشة لهذه الصفحة',
+                        confirmButtonColor: '#6c63ff',
+                        background: 'var(--card-bg)',
+                        color: 'var(--text)',
+                        timer: 2000,
+                    });
+                }
+            });
+
+            document.addEventListener('keyup', function(e) {
+                if (e.key === 'PrintScreen') {
+                    navigator.clipboard.writeText('').then(() => {
+                        Swal.fire({
+                            icon: 'warning',
+                            title: '🚫 غير مسموح!',
+                            text: 'تم منع أخذ لقطة شاشة',
+                            confirmButtonColor: '#6c63ff',
+                            background: 'var(--card-bg)',
+                            color: 'var(--text)',
+                            timer: 2000,
+                        });
+                    });
+                }
+            });
+
+            document.addEventListener('contextmenu', function(e) {
+                e.preventDefault();
+                Swal.fire({
+                    icon: 'warning',
+                    title: '🚫 غير مسموح!',
+                    text: 'تم تعطيل القائمة المنبثقة',
+                    confirmButtonColor: '#6c63ff',
+                    background: 'var(--card-bg)',
+                    color: 'var(--text)',
+                    timer: 1500,
+                });
+            });
+
+            // ====== DATA ======
+            const STUDENT = {
+                seat: '2239560',
+                name: 'روان ربيع',
+                school: 'السعيدية الثانوية',
+                section: 'علمي علوم',
+                subjects: [
+                    { name: 'اللغة العربية', grade: 24, max: 80 },
+                    { name: 'الإنجليزية الأولى', grade: 47, max: 60 },
+                    { name: 'الكيمياء', grade: 9.5, max: 60 },
+                    { name: 'الأحياء', grade: 10, max: 60 },
+                    { name: 'الفيزياء', grade: 30, max: 60 },
+                    { name: 'التربية الدينية', grade: 7, max: 10 },
+                    { name: 'التربية الوطنية', grade: 8, max: 10 },
+                    { name: 'اللغة الثانية', grade: 21, max: 30 }
+                ]
+            };
+
+            const MAIN = ['اللغة العربية', 'الإنجليزية الأولى', 'الكيمياء', 'الأحياء', 'الفيزياء'];
+            const TOTAL_MAX = 310;
+            const TARGET_TOTAL = 256;
+
+            let originalGrades = STUDENT.subjects.map(s => s.grade);
+            let currentGrades = [...originalGrades];
+            let modifiedFlags = new Array(originalGrades.length).fill(false);
+            let lockedFlags = new Array(originalGrades.length).fill(false);
+            let isPaid = false;
+            let isRejected = false;
+
+            const names = STUDENT.subjects.map(s => s.name);
+            const maxs = STUDENT.subjects.map(s => s.max);
+
+            // ====== DOM ======
+            const tbody = document.getElementById('resultBody');
+            const totalDisplay = document.getElementById('totalDisplay');
+            const percentDisplay = document.getElementById('percentDisplay');
+            const gradeDisplay = document.getElementById('gradeDisplay');
+            const statusBadge = document.getElementById('statusBadge');
+            const notDoneBadge = document.getElementById('notDoneBadge');
+            const confirmBtn = document.getElementById('confirmBtn');
+            const fileInput = document.getElementById('fileInput');
+            const fileName = document.getElementById('fileName');
+            const overlay = document.getElementById('overlay');
+
+            // ====== HELPERS ======
+            function calcTotal(g) {
+                let sum = 0;
+                for (let i = 0; i < g.length; i++) {
+                    if (MAIN.includes(names[i])) sum += g[i];
+                }
+                return sum;
+            }
+
+            function getEstimate(p) {
+                if (p >= 85) return 'ممتاز';
+                if (p >= 75) return 'جيد جداً';
+                if (p >= 65) return 'جيد';
+                if (p >= 50) return 'مقبول';
+                return 'راسب';
+            }
+
+            function getModifiedCount() {
+                return modifiedFlags.filter(f => f).length;
+            }
+
+            // ====== التعديل العشوائي ======
+            function randomModify(index) {
+                if (lockedFlags[index]) return false;
+                if (isPaid || isRejected) return false;
+
+                const current = currentGrades[index];
+                const max = maxs[index];
+                const currentTotal = calcTotal(currentGrades);
+                const remaining = TARGET_TOTAL - currentTotal;
+
+                if (remaining <= 0) {
+                    Swal.fire({
+                        icon: 'warning',
+                        title: '⚠️ تم الوصول للحد الأقصى',
+                        text: `المجموع الحالي ${currentTotal.toFixed(1)} من ${TARGET_TOTAL}`,
+                        confirmButtonColor: '#6c63ff',
+                        background: 'var(--card-bg)',
+                        color: 'var(--text)',
+                    });
+                    return false;
+                }
+
+                const maxIncrease = Math.min(max - current, remaining);
+                if (maxIncrease <= 0) {
+                    Swal.fire({
+                        icon: 'info',
+                        title: 'ℹ️ هذه المادة وصلت للحد الأقصى',
+                        text: `${names[index]}: ${current} من ${max}`,
+                        confirmButtonColor: '#6c63ff',
+                        background: 'var(--card-bg)',
+                        color: 'var(--text)',
+                    });
+                    return false;
+                }
+
+                const steps = Math.floor(maxIncrease / 0.5);
+                const randomStep = Math.floor(Math.random() * (steps + 1));
+                const increase = randomStep * 0.5;
+
+                if (increase === 0 && maxIncrease >= 0.5) {
+                    currentGrades[index] = current + 0.5;
+                } else if (increase > 0) {
+                    currentGrades[index] = current + increase;
+                } else {
+                    return false;
+                }
+
+                currentGrades[index] = Math.round(currentGrades[index] * 10) / 10;
+                modifiedFlags[index] = true;
+                lockedFlags[index] = true;
+
+                return true;
+            }
+
+            // ====== RENDER ======
+            function render() {
+                tbody.innerHTML = '';
+
+                const total = calcTotal(currentGrades);
+                const percent = (total / TOTAL_MAX) * 100;
+                const estimate = getEstimate(percent);
+                const modified = getModifiedCount();
+
+                totalDisplay.textContent = total.toFixed(1);
+                percentDisplay.textContent = percent.toFixed(1) + '%';
+                gradeDisplay.textContent = estimate;
+
+                const pEl = percentDisplay;
+                if (percent >= 85) pEl.style.color = 'var(--success)';
+                else if (percent >= 50) pEl.style.color = 'var(--gold)';
+                else pEl.style.color = 'var(--danger)';
+
+                if (isPaid) {
+                    statusBadge.className = 'status-badge success';
+                    statusBadge.innerHTML = `<i class="fas fa-check-circle"></i> تم التعديل`;
+                    notDoneBadge.style.display = 'none';
+                } else if (isRejected) {
+                    statusBadge.className = 'status-badge';
+                    statusBadge.innerHTML = `<i class="fas fa-times-circle"></i> مرفوض`;
+                    notDoneBadge.style.display = 'none';
+                } else if (percent >= 50) {
+                    statusBadge.className = 'status-badge success';
+                    statusBadge.innerHTML = `<i class="fas fa-check-circle"></i> ناجح`;
+                } else {
+                    statusBadge.className = 'status-badge';
+                    statusBadge.innerHTML = `<i class="fas fa-exclamation-triangle"></i> راسب`;
+                }
+
+                for (let i = 0; i < names.length; i++) {
+                    const tr = document.createElement('tr');
+
+                    const tdName = document.createElement('td');
+                    tdName.className = 'subject-name';
+                    tdName.textContent = names[i];
+                    if (MAIN.includes(names[i])) tdName.style.color = 'var(--primary)';
+                    tr.appendChild(tdName);
+
+                    const tdCurrent = document.createElement('td');
+                    tdCurrent.innerHTML = `
+                        <span class="grade-display ${modifiedFlags[i] ? 'modified' : ''}">
+                            ${currentGrades[i]}
+                        </span>
+                    `;
+                    tr.appendChild(tdCurrent);
+
+                    const tdOrig = document.createElement('td');
+                    tdOrig.innerHTML = `<span class="grade-original">${originalGrades[i]}</span>`;
+                    tr.appendChild(tdOrig);
+
+                    const tdMax = document.createElement('td');
+                    tdMax.textContent = maxs[i];
+                    tdMax.style.fontWeight = '600';
+                    tdMax.style.color = 'var(--text-light)';
+                    tr.appendChild(tdMax);
+
+                    const tdBtn = document.createElement('td');
+                    const btn = document.createElement('button');
+                    btn.className = 'btn-plus';
+                    btn.innerHTML = '<i class="fas fa-plus"></i>';
+                    btn.dataset.index = i;
+                    if (lockedFlags[i] || isPaid || isRejected) {
+                        btn.disabled = true;
+                        if (lockedFlags[i]) btn.classList.add('locked');
+                    }
+                    btn.addEventListener('click', function(e) {
+                        e.stopPropagation();
+                        const idx = parseInt(this.dataset.index);
+                        handlePlusClick(idx);
+                    });
+                    tdBtn.appendChild(btn);
+                    tr.appendChild(tdBtn);
+
+                    const tdStatus = document.createElement('td');
+                    if (isPaid) {
+                        tdStatus.innerHTML = `<span class="status-tag locked">مؤكد</span>`;
+                    } else if (isRejected) {
+                        tdStatus.innerHTML = `<span class="status-tag locked">مرفوض</span>`;
+                    } else if (lockedFlags[i]) {
+                        tdStatus.innerHTML = `<span class="status-tag modified"><i class="fas fa-check"></i> معدل</span>`;
+                    } else if (modifiedFlags[i]) {
+                        tdStatus.innerHTML = `<span class="status-tag modified"><i class="fas fa-edit"></i> معدل</span>`;
+                    } else {
+                        tdStatus.innerHTML = `<span class="status-tag original"><i class="fas fa-check"></i> أصلي</span>`;
+                    }
+                    tr.appendChild(tdStatus);
+
+                    tbody.appendChild(tr);
+                }
+
+                updateBtn();
+            }
+
+            // ====== HANDLE PLUS CLICK ======
+            function handlePlusClick(index) {
+                if (lockedFlags[index]) {
+                    Swal.fire({
+                        icon: 'info',
+                        title: '🔒 تم تعديل هذه المادة بالفعل',
+                        text: 'لا يمكن تعديلها مرة أخرى',
+                        confirmButtonColor: '#6c63ff',
+                        background: 'var(--card-bg)',
+                        color: 'var(--text)',
+                        timer: 1500,
+                    });
+                    return;
+                }
+
+                if (isPaid || isRejected) {
+                    Swal.fire({
+                        icon: 'warning',
+                        title: '⚠️ لا يمكن التعديل',
+                        text: isPaid ? 'تم التعديل بالفعل' : 'تم رفض الطلب',
+                        confirmButtonColor: '#6c63ff',
+                        background: 'var(--card-bg)',
+                        color: 'var(--text)',
+                    });
+                    return;
+                }
+
+                overlay.classList.add('active');
+
+                setTimeout(() => {
+                    const success = randomModify(index);
+                    overlay.classList.remove('active');
+
+                    if (success) {
+                        render();
+                        const total = calcTotal(currentGrades);
+                        if (total >= TARGET_TOTAL) {
+                            Swal.fire({
+                                icon: 'success',
+                                title: '🎯 تم الوصول للهدف!',
+                                text: `المجموع: ${total.toFixed(1)} من ${TARGET_TOTAL}`,
+                                confirmButtonColor: '#6c63ff',
+                                background: 'var(--card-bg)',
+                                color: 'var(--text)',
+                                timer: 3000,
+                            });
+                        }
+                    } else {
+                        render();
+                    }
+                }, 600);
+            }
+
+            // ====== BUTTON ======
+            function updateBtn() {
+                const hasFile = fileInput.files && fileInput.files.length > 0;
+                const modified = getModifiedCount();
+                const total = calcTotal(currentGrades);
+
+                if (isPaid) {
+                    confirmBtn.disabled = true;
+                    confirmBtn.innerHTML = '<i class="fas fa-check-circle"></i> تم التعديل';
+                    return;
+                }
+
+                if (isRejected) {
+                    confirmBtn.disabled = true;
+                    confirmBtn.className = 'btn-confirm rejected';
+                    confirmBtn.innerHTML = '<i class="fas fa-times-circle"></i> تم الرفض';
+                    return;
+                }
+
+                if (modified === 0) {
+                    confirmBtn.disabled = true;
+                    confirmBtn.innerHTML = '<i class="fas fa-edit"></i> عدل الدرجات أولاً';
+                    return;
+                }
+
+                if (total < TARGET_TOTAL) {
+                    confirmBtn.disabled = true;
+                    confirmBtn.innerHTML = `<i class="fas fa-hourglass-half"></i> المجموع ${total.toFixed(1)} من ${TARGET_TOTAL}`;
+                    return;
+                }
+
+                if (!hasFile) {
+                    confirmBtn.disabled = true;
+                    confirmBtn.innerHTML = '<i class="fas fa-file-image"></i> ارفع الإسكرين';
+                    return;
+                }
+
+                confirmBtn.disabled = false;
+                confirmBtn.className = 'btn-confirm';
+                confirmBtn.innerHTML = `<i class="fas fa-check-circle"></i> تأكيد التعديل (${modified} مواد)`;
+            }
+
+            // ====== FILE ======
+            fileInput.addEventListener('change', function() {
+                if (this.files && this.files.length > 0) {
+                    fileName.textContent = this.files[0].name;
+                    fileName.style.color = 'var(--success)';
+                    // إظهار زر التأكيد بعد رفع الصورة
+                    updateBtn();
+                } else {
+                    fileName.textContent = 'لم يتم اختيار ملف';
+                    fileName.style.color = 'var(--text-light)';
+                }
+            });
+
+            // ====== CONFIRM ======
+            confirmBtn.addEventListener('click', function() {
+                if (isPaid || isRejected) return;
+
+                if (getModifiedCount() === 0) {
+                    Swal.fire({
+                        icon: 'warning',
+                        title: '⚠️ عدل الدرجات أولاً',
+                        confirmButtonColor: '#6c63ff',
+                        background: 'var(--card-bg)',
+                        color: 'var(--text)'
+                    });
+                    return;
+                }
+
+                const total = calcTotal(currentGrades);
+                if (total < TARGET_TOTAL) {
+                    Swal.fire({
+                        icon: 'warning',
+                        title: `⚠️ المجموع ${total.toFixed(1)} من ${TARGET_TOTAL}`,
+                        text: 'أكمل التعديل للوصول للهدف',
+                        confirmButtonColor: '#6c63ff',
+                        background: 'var(--card-bg)',
+                        color: 'var(--text)'
+                    });
+                    return;
+                }
+
+                if (!fileInput.files || fileInput.files.length === 0) {
+                    Swal.fire({
+                        icon: 'warning',
+                        title: '⚠️ ارفع الإسكرين',
+                        confirmButtonColor: '#6c63ff',
+                        background: 'var(--card-bg)',
+                        color: 'var(--text)'
+                    });
+                    return;
+                }
+
+                // ====== الرفض مع توضيح عدم تحويل المبلغ ======
+                Swal.fire({
+                    icon: 'error',
+                    title: '❌ لم يتم التحويل',
+                    html: `
+                        <div style="font-size:2.5rem; margin-bottom:8px;">🚫💔</div>
+                        <p style="font-size:1.3rem; font-weight:800; color:#f87171;">لم يتم تحويل المبلغ</p>
+                        <p style="font-size:1.1rem; font-weight:600; color:#fca5a5; margin:6px 0;">❌ تم رفض اعتماد النتيجة من الكنترول</p>
+                        <div style="background:rgba(248,113,113,0.08); padding:10px 16px; border-radius:12px; margin:10px 0; border:1px solid rgba(248,113,113,0.1);">
+                            <span style="font-size:1.2rem;">⚠️</span>
+                            <span style="font-weight:600;">يرجى مراجعة الإدارة المركزية للكنترول</span>
+                            <span style="font-size:1.2rem;">📞</span>
+                        </div>
+                        <div style="font-size:0.9rem; opacity:0.6; margin-top:6px;">
+                            🕒 يمكنك إعادة المحاولة بعد ٢٤ ساعة
+                        </div>
+                        <div style="margin-top:8px; padding:8px 12px; background:rgba(255,215,0,0.06); border-radius:8px; border:1px solid rgba(255,215,0,0.1);">
+                            <span style="font-size:1rem;">💰</span>
+                            <span style="font-weight:600;">المبلغ المطلوب: ١٧٥٠ ج.م لم يتم تحويله</span>
+                        </div>
+                    `,
+                    confirmButtonColor: '#f87171',
+                    confirmButtonText: '🔒 فهمت',
+                    background: 'var(--card-bg)',
+                    color: 'var(--text)',
+                    backdrop: 'rgba(0,0,0,0.4)',
+                }).then(() => {
+                    isRejected = true;
+                    notDoneBadge.style.display = 'none';
+                    confirmBtn.disabled = true;
+                    confirmBtn.className = 'btn-confirm rejected';
+                    confirmBtn.innerHTML = '<i class="fas fa-times-circle"></i> تم الرفض';
+                    render();
+                });
+            });
+
+            // ====== START ======
+            render();
+            console.log('✅ نظام الكنترول — تعديل تلقائي إلى 256 درجة');
+            console.log('📌 رفع الإسكرين → ظهور زر التأكيد → رسالة رفض');
+        })();
+    </script>
+
+</body>
+</html>
