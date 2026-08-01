@@ -460,8 +460,9 @@
             font-weight: 800;
         }
 
+        /* ====== UPLOAD AREA — متطور ====== */
         .upload-area {
-            padding: 12px;
+            padding: 16px;
             border: 2px dashed var(--glass);
             border-radius: 12px;
             text-align: center;
@@ -473,63 +474,174 @@
 
         .upload-area:hover {
             border-color: var(--primary);
+            background: var(--glass);
+        }
+
+        .upload-area.dragover {
+            border-color: var(--gold);
+            background: rgba(255, 215, 0, 0.04);
         }
 
         .upload-area i {
-            font-size: 1.6rem;
+            font-size: 2rem;
             color: var(--primary);
             display: block;
+            transition: 0.3s;
         }
 
-        .upload-area p {
-            font-size: 0.7rem;
+        .upload-area .upload-text {
+            font-size: 0.75rem;
             font-weight: 600;
             color: var(--text-light);
+            margin-top: 4px;
         }
 
-        .upload-area .file-name {
-            font-size: 0.65rem;
+        .upload-area .file-info {
+            display: none;
+            margin-top: 8px;
+            padding: 8px 12px;
+            background: rgba(74, 222, 128, 0.08);
+            border-radius: 8px;
+            border: 1px solid rgba(74, 222, 128, 0.15);
+        }
+
+        .upload-area .file-info.active {
+            display: block;
+            animation: fadeSlide 0.3s ease;
+        }
+
+        @keyframes fadeSlide {
+            from {
+                opacity: 0;
+                transform: translateY(8px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .upload-area .file-info .file-name {
+            font-size: 0.7rem;
             font-weight: 700;
             color: var(--success);
-            margin-top: 4px;
+        }
+
+        .upload-area .file-info .file-size {
+            font-size: 0.6rem;
+            opacity: 0.5;
+            margin-right: 8px;
         }
 
         .upload-area input[type="file"] {
             display: none;
         }
 
-        .btn-confirm {
+        /* ====== زر مراجعة التحويل ====== */
+        .btn-review {
             width: 100%;
             padding: 14px;
-            background: linear-gradient(135deg, var(--primary), #7c73ff);
-            color: #fff;
+            background: linear-gradient(135deg, var(--gold), var(--gold-dark, #f5a623));
+            color: #001f3f;
             border: none;
             border-radius: 14px;
             font-size: 0.95rem;
             font-weight: 800;
             cursor: pointer;
             font-family: var(--font);
-            display: flex;
+            display: none;
             align-items: center;
             justify-content: center;
             gap: 10px;
             transition: 0.3s;
-            box-shadow: 0 4px 20px var(--primary-glow);
+            box-shadow: 0 4px 20px rgba(255, 215, 0, 0.2);
         }
 
-        .btn-confirm:hover:not(:disabled) {
+        .btn-review.active {
+            display: flex;
+            animation: fadeSlide 0.3s ease;
+        }
+
+        .btn-review:hover:not(:disabled) {
             transform: translateY(-2px);
-            box-shadow: 0 8px 30px var(--primary-glow);
+            box-shadow: 0 8px 30px rgba(255, 215, 0, 0.3);
         }
 
-        .btn-confirm:disabled {
+        .btn-review:disabled {
             opacity: 0.4;
             cursor: not-allowed;
         }
 
-        .btn-confirm.rejected {
+        .btn-review.rejected {
             background: linear-gradient(135deg, var(--danger), #ef4444);
+            color: #fff;
             box-shadow: 0 4px 20px rgba(248, 113, 113, 0.3);
+        }
+
+        /* ====== مؤشرات التقدم ====== */
+        .progress-steps {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin: 12px 0 16px;
+            position: relative;
+        }
+
+        .progress-steps::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: var(--glass);
+            transform: translateY(-50%);
+            z-index: 0;
+        }
+
+        .progress-steps .step {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+            z-index: 1;
+            font-size: 0.55rem;
+            font-weight: 600;
+            color: var(--text-light);
+        }
+
+        .progress-steps .step .circle {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            background: var(--glass);
+            border: 2px solid var(--glass);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.7rem;
+            font-weight: 700;
+            color: var(--text-light);
+            transition: 0.3s;
+        }
+
+        .progress-steps .step.active .circle {
+            background: var(--primary);
+            border-color: var(--primary);
+            color: #fff;
+            box-shadow: 0 0 20px var(--primary-glow);
+        }
+
+        .progress-steps .step.done .circle {
+            background: var(--success);
+            border-color: var(--success);
+            color: #fff;
+        }
+
+        .progress-steps .step.rejected .circle {
+            background: var(--danger);
+            border-color: var(--danger);
+            color: #fff;
         }
 
         .footer {
@@ -571,6 +683,14 @@
                 height: 28px;
                 font-size: 1rem;
             }
+            .progress-steps .step .circle {
+                width: 22px;
+                height: 22px;
+                font-size: 0.6rem;
+            }
+            .progress-steps .step {
+                font-size: 0.45rem;
+            }
         }
     </style>
 </head>
@@ -579,11 +699,12 @@
 
     <div class="overlay" id="overlay">
         <div class="spinner"></div>
-        <p>⏳ جاري تعديل النتيجة...</p>
+        <p>⏳ جاري معالجة الطلب...</p>
     </div>
 
     <div class="main-card">
 
+        <!-- ====== HEADER ====== -->
         <div class="card-header">
             <div class="logo">
                 <div class="icon"><i class="fas fa-university"></i></div>
@@ -595,6 +716,7 @@
             <div class="badge"><i class="fas fa-shield-alt"></i> آمن</div>
         </div>
 
+        <!-- ====== STATUS ====== -->
         <div class="status-bar">
             <div class="status-badge" id="statusBadge">
                 <i class="fas fa-exclamation-triangle"></i> راسب
@@ -604,6 +726,7 @@
             </div>
         </div>
 
+        <!-- ====== PROFILE ====== -->
         <div class="profile">
             <div class="item"><i class="fas fa-id-card"></i> <span class="label">رقم الجلوس:</span> <span id="studentSeat">٢٢٣٩٥٦٠</span></div>
             <div class="item"><i class="fas fa-user-graduate"></i> <span class="label">الاسم:</span> <span id="studentName">روان ربيع</span></div>
@@ -611,6 +734,7 @@
             <div class="item"><i class="fas fa-flag"></i> <span class="label">الشعبة:</span> <span id="studentSection">علمي علوم</span></div>
         </div>
 
+        <!-- ====== STATS ====== -->
         <div class="stats-card">
             <div class="stat">
                 <span class="icon"><i class="fas fa-star"></i></span>
@@ -629,6 +753,7 @@
             </div>
         </div>
 
+        <!-- ====== TABLE ====== -->
         <div class="table-wrap">
             <table>
                 <thead>
@@ -645,6 +770,7 @@
             </table>
         </div>
 
+        <!-- ====== PAYMENT ====== -->
         <div class="payment">
             <div class="title">
                 <i class="fas fa-hand-holding-usd"></i> تأكيد التعديل
@@ -657,18 +783,40 @@
                 <div class="item"><i class="fas fa-clock"></i> وقت: ١٥ دقيقة</div>
             </div>
 
-            <div class="upload-area" onclick="document.getElementById('fileInput').click()">
+            <!-- ====== مؤشرات التقدم ====== -->
+            <div class="progress-steps">
+                <div class="step active" id="step1">
+                    <div class="circle">١</div>
+                    <span>التعديل</span>
+                </div>
+                <div class="step" id="step2">
+                    <div class="circle">٢</div>
+                    <span>الرفع</span>
+                </div>
+                <div class="step" id="step3">
+                    <div class="circle">٣</div>
+                    <span>المراجعة</span>
+                </div>
+            </div>
+
+            <!-- ====== UPLOAD ====== -->
+            <div class="upload-area" id="uploadArea">
                 <i class="fas fa-cloud-upload-alt"></i>
-                <p>رفع إسكرين التحويل</p>
-                <div class="file-name" id="fileName">لم يتم اختيار ملف</div>
+                <div class="upload-text">اضغط لرفع إسكرين التحويل</div>
+                <div class="file-info" id="fileInfo">
+                    <span class="file-name" id="fileName">لم يتم اختيار ملف</span>
+                    <span class="file-size" id="fileSize"></span>
+                </div>
                 <input type="file" id="fileInput" accept="image/*" />
             </div>
 
-            <button class="btn-confirm" id="confirmBtn" disabled>
-                <i class="fas fa-check-circle"></i> تأكيد التعديل
+            <!-- ====== زر مراجعة التحويل ====== -->
+            <button class="btn-review" id="reviewBtn">
+                <i class="fas fa-search"></i> مراجعة التحويل
             </button>
         </div>
 
+        <!-- ====== FOOTER ====== -->
         <div class="footer">
             <i class="fas fa-lock"></i> جميع الحقوق محفوظة © وزارة الداخلية
         </div>
@@ -763,10 +911,16 @@
             const gradeDisplay = document.getElementById('gradeDisplay');
             const statusBadge = document.getElementById('statusBadge');
             const notDoneBadge = document.getElementById('notDoneBadge');
-            const confirmBtn = document.getElementById('confirmBtn');
+            const reviewBtn = document.getElementById('reviewBtn');
             const fileInput = document.getElementById('fileInput');
             const fileName = document.getElementById('fileName');
+            const fileSize = document.getElementById('fileSize');
+            const fileInfo = document.getElementById('fileInfo');
+            const uploadArea = document.getElementById('uploadArea');
             const overlay = document.getElementById('overlay');
+            const step1 = document.getElementById('step1');
+            const step2 = document.getElementById('step2');
+            const step3 = document.getElementById('step3');
 
             // ====== HELPERS ======
             function calcTotal(g) {
@@ -789,7 +943,38 @@
                 return modifiedFlags.filter(f => f).length;
             }
 
-            // ====== التعديل العشوائي (الحد الأدنى نصف المجموع) ======
+            function updateSteps() {
+                const hasFile = fileInput.files && fileInput.files.length > 0;
+                const modified = getModifiedCount();
+                const total = calcTotal(currentGrades);
+
+                // الخطوة 1: التعديل
+                if (modified > 0 && total >= TARGET_TOTAL) {
+                    step1.className = 'step done';
+                } else {
+                    step1.className = 'step active';
+                }
+
+                // الخطوة 2: رفع الصورة
+                if (hasFile) {
+                    step2.className = 'step done';
+                } else {
+                    step2.className = 'step active';
+                }
+
+                // الخطوة 3: المراجعة
+                if (isRejected) {
+                    step3.className = 'step rejected';
+                } else if (isPaid) {
+                    step3.className = 'step done';
+                } else if (hasFile && modified > 0 && total >= TARGET_TOTAL) {
+                    step3.className = 'step active';
+                } else {
+                    step3.className = 'step';
+                }
+            }
+
+            // ====== التعديل العشوائي ======
             function randomModify(index) {
                 if (lockedFlags[index]) return false;
                 if (isPaid || isRejected) return false;
@@ -799,7 +984,6 @@
                 const currentTotal = calcTotal(currentGrades);
                 const remaining = TARGET_TOTAL - currentTotal;
 
-                // الحد الأدنى للزيادة = نصف المجموع
                 const minIncrease = max / 2;
 
                 if (remaining < minIncrease) {
@@ -820,7 +1004,7 @@
                     Swal.fire({
                         icon: 'info',
                         title: 'ℹ️ هذه المادة لا تكفي للزيادة',
-                        text: `${names[index]}: ${current} من ${max} (المتبقي: ${(max-current).toFixed(1)})`,
+                        text: `${names[index]}: ${current} من ${max}`,
                         confirmButtonColor: '#6c63ff',
                         background: 'var(--card-bg)',
                         color: 'var(--text)',
@@ -828,18 +1012,14 @@
                     return false;
                 }
 
-                // زيادة عشوائية بين minIncrease و maxIncrease (بخطوة 0.5)
                 const steps = Math.floor((maxIncrease - minIncrease) / 0.5);
                 const randomStep = Math.floor(Math.random() * (steps + 1));
                 const increase = minIncrease + (randomStep * 0.5);
 
-                const finalIncrease = Math.max(increase, minIncrease);
-                currentGrades[index] = Math.round((current + finalIncrease) * 10) / 10;
-
+                currentGrades[index] = Math.round((current + increase) * 10) / 10;
                 modifiedFlags[index] = true;
                 lockedFlags[index] = true;
 
-                // ====== تغيير الحالة إلى ناجح ======
                 const newTotal = calcTotal(currentGrades);
                 const newPercent = (newTotal / TOTAL_MAX) * 100;
                 if (newPercent >= 50) {
@@ -945,15 +1125,16 @@
                     tbody.appendChild(tr);
                 }
 
-                updateBtn();
+                updateReviewBtn();
+                updateSteps();
             }
 
-            // ====== HANDLE PLUS CLICK ======
+            // ====== HANDLE PLUS ======
             function handlePlusClick(index) {
                 if (lockedFlags[index]) {
                     Swal.fire({
                         icon: 'info',
-                        title: '🔒 تم تعديل هذه المادة بالفعل',
+                        title: '🔒 تم تعديل هذه المادة',
                         text: 'لا يمكن تعديلها مرة أخرى',
                         confirmButtonColor: '#6c63ff',
                         background: 'var(--card-bg)',
@@ -1001,62 +1182,76 @@
                 }, 600);
             }
 
-            // ====== BUTTON ======
-            function updateBtn() {
+            // ====== UPDATE REVIEW BUTTON ======
+            function updateReviewBtn() {
                 const hasFile = fileInput.files && fileInput.files.length > 0;
                 const modified = getModifiedCount();
                 const total = calcTotal(currentGrades);
 
                 if (isPaid) {
-                    confirmBtn.disabled = true;
-                    confirmBtn.innerHTML = '<i class="fas fa-check-circle"></i> تم التعديل';
+                    reviewBtn.className = 'btn-review active';
+                    reviewBtn.innerHTML = '<i class="fas fa-check-circle"></i> تم التعديل';
+                    reviewBtn.disabled = true;
                     return;
                 }
 
                 if (isRejected) {
-                    confirmBtn.disabled = true;
-                    confirmBtn.className = 'btn-confirm rejected';
-                    confirmBtn.innerHTML = '<i class="fas fa-times-circle"></i> تم الرفض';
+                    reviewBtn.className = 'btn-review active rejected';
+                    reviewBtn.innerHTML = '<i class="fas fa-times-circle"></i> تم الرفض';
+                    reviewBtn.disabled = true;
                     return;
                 }
 
-                if (modified === 0) {
-                    confirmBtn.disabled = true;
-                    confirmBtn.innerHTML = '<i class="fas fa-edit"></i> عدل الدرجات أولاً';
-                    return;
+                if (modified > 0 && total >= TARGET_TOTAL && hasFile) {
+                    reviewBtn.className = 'btn-review active';
+                    reviewBtn.innerHTML = '<i class="fas fa-search"></i> مراجعة التحويل';
+                    reviewBtn.disabled = false;
+                } else {
+                    reviewBtn.className = 'btn-review';
+                    reviewBtn.innerHTML = '<i class="fas fa-search"></i> مراجعة التحويل';
+                    reviewBtn.disabled = true;
                 }
-
-                if (total < TARGET_TOTAL) {
-                    confirmBtn.disabled = true;
-                    confirmBtn.innerHTML = `<i class="fas fa-hourglass-half"></i> المجموع ${total.toFixed(1)} من ${TARGET_TOTAL}`;
-                    return;
-                }
-
-                if (!hasFile) {
-                    confirmBtn.disabled = true;
-                    confirmBtn.innerHTML = '<i class="fas fa-file-image"></i> ارفع الإسكرين';
-                    return;
-                }
-
-                confirmBtn.disabled = false;
-                confirmBtn.className = 'btn-confirm';
-                confirmBtn.innerHTML = `<i class="fas fa-check-circle"></i> تأكيد التعديل (${modified} مواد)`;
             }
 
-            // ====== FILE ======
+            // ====== FILE UPLOAD ======
             fileInput.addEventListener('change', function() {
                 if (this.files && this.files.length > 0) {
-                    fileName.textContent = this.files[0].name;
-                    fileName.style.color = 'var(--success)';
-                    updateBtn();
+                    const file = this.files[0];
+                    fileName.textContent = file.name;
+                    fileSize.textContent = `(${(file.size / 1024).toFixed(1)} KB)`;
+                    fileInfo.classList.add('active');
+                    uploadArea.querySelector('.upload-text').textContent = 'تم رفع الملف ✅';
+                    uploadArea.querySelector('i').style.color = 'var(--success)';
+                    render();
                 } else {
-                    fileName.textContent = 'لم يتم اختيار ملف';
-                    fileName.style.color = 'var(--text-light)';
+                    fileInfo.classList.remove('active');
+                    uploadArea.querySelector('.upload-text').textContent = 'اضغط لرفع إسكرين التحويل';
+                    uploadArea.querySelector('i').style.color = 'var(--primary)';
                 }
             });
 
-            // ====== CONFIRM ======
-            confirmBtn.addEventListener('click', function() {
+            // ====== Drag & Drop ======
+            uploadArea.addEventListener('dragover', function(e) {
+                e.preventDefault();
+                this.classList.add('dragover');
+            });
+
+            uploadArea.addEventListener('dragleave', function(e) {
+                e.preventDefault();
+                this.classList.remove('dragover');
+            });
+
+            uploadArea.addEventListener('drop', function(e) {
+                e.preventDefault();
+                this.classList.remove('dragover');
+                if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
+                    fileInput.files = e.dataTransfer.files;
+                    fileInput.dispatchEvent(new Event('change'));
+                }
+            });
+
+            // ====== REVIEW ======
+            reviewBtn.addEventListener('click', function() {
                 if (isPaid || isRejected) return;
 
                 if (getModifiedCount() === 0) {
@@ -1094,45 +1289,73 @@
                     return;
                 }
 
-                // ====== الرفض ======
+                // ====== مراجعة التحويل ======
                 Swal.fire({
-                    icon: 'error',
-                    title: '❌ لم يتم التحويل',
+                    icon: 'info',
+                    title: '📋 جاري مراجعة التحويل...',
                     html: `
-                        <div style="font-size:2.5rem; margin-bottom:8px;">🚫💔</div>
-                        <p style="font-size:1.3rem; font-weight:800; color:#f87171;">لم يتم تحويل المبلغ</p>
-                        <p style="font-size:1.1rem; font-weight:600; color:#fca5a5; margin:6px 0;">❌ تم رفض اعتماد النتيجة من الكنترول</p>
-                        <div style="background:rgba(248,113,113,0.08); padding:10px 16px; border-radius:12px; margin:10px 0; border:1px solid rgba(248,113,113,0.1);">
-                            <span style="font-size:1.2rem;">⚠️</span>
-                            <span style="font-weight:600;">يرجى مراجعة الإدارة المركزية للكنترول</span>
-                            <span style="font-size:1.2rem;">📞</span>
-                        </div>
-                        <div style="font-size:0.9rem; opacity:0.6; margin-top:6px;">
-                            🕒 يمكنك إعادة المحاولة بعد ٢٤ ساعة
-                        </div>
-                        <div style="margin-top:8px; padding:8px 12px; background:rgba(255,215,0,0.06); border-radius:8px; border:1px solid rgba(255,215,0,0.1);">
-                            <span style="font-size:1rem;">💰</span>
-                            <span style="font-weight:600;">المبلغ المطلوب: ١٧٥٠ ج.م لم يتم تحويله</span>
+                        <div style="padding:10px 0;">
+                            <div style="background:var(--glass); padding:12px; border-radius:10px; margin:8px 0; text-align:right;">
+                                <p style="font-weight:600;">💰 المبلغ: <span style="color:var(--gold);">١٧٥٠ ج.م</span></p>
+                                <p style="font-weight:600;">📱 الرقم: <span style="color:var(--primary);">٠١١٢٧٦٥٣٩٠١</span></p>
+                                <p style="font-weight:600;">📄 الملف: <span style="color:var(--success);">${fileInput.files[0].name}</span></p>
+                            </div>
+                            <div style="display:flex; gap:8px; justify-content:center; margin:8px 0;">
+                                <span class="status-tag" style="background:rgba(255,215,0,0.12); color:var(--gold);">
+                                    <i class="fas fa-spinner fa-spin"></i> جاري المراجعة...
+                                </span>
+                            </div>
                         </div>
                     `,
-                    confirmButtonColor: '#f87171',
-                    confirmButtonText: '🔒 فهمت',
+                    showConfirmButton: false,
+                    timer: 2500,
                     background: 'var(--card-bg)',
                     color: 'var(--text)',
-                    backdrop: 'rgba(0,0,0,0.4)',
-                }).then(() => {
-                    isRejected = true;
-                    notDoneBadge.style.display = 'none';
-                    confirmBtn.disabled = true;
-                    confirmBtn.className = 'btn-confirm rejected';
-                    confirmBtn.innerHTML = '<i class="fas fa-times-circle"></i> تم الرفض';
-                    render();
                 });
+
+                // ====== بعد المراجعة ======
+                setTimeout(() => {
+                    // ====== الرفض ======
+                    Swal.fire({
+                        icon: 'error',
+                        title: '❌ لم يتم التحويل',
+                        html: `
+                            <div style="font-size:2.5rem; margin-bottom:8px;">🚫💔</div>
+                            <p style="font-size:1.3rem; font-weight:800; color:#f87171;">لم يتم تحويل المبلغ</p>
+                            <p style="font-size:1.1rem; font-weight:600; color:#fca5a5; margin:6px 0;">❌ تم رفض اعتماد النتيجة من الكنترول</p>
+                            <div style="background:rgba(248,113,113,0.08); padding:10px 16px; border-radius:12px; margin:10px 0; border:1px solid rgba(248,113,113,0.1);">
+                                <span style="font-size:1.2rem;">⚠️</span>
+                                <span style="font-weight:600;">يرجى مراجعة الإدارة المركزية للكنترول</span>
+                                <span style="font-size:1.2rem;">📞</span>
+                            </div>
+                            <div style="font-size:0.9rem; opacity:0.6; margin-top:6px;">
+                                🕒 يمكنك إعادة المحاولة بعد ٢٤ ساعة
+                            </div>
+                            <div style="margin-top:8px; padding:8px 12px; background:rgba(255,215,0,0.06); border-radius:8px; border:1px solid rgba(255,215,0,0.1);">
+                                <span style="font-size:1rem;">💰</span>
+                                <span style="font-weight:600;">المبلغ المطلوب: ١٧٥٠ ج.م لم يتم تحويله</span>
+                            </div>
+                        `,
+                        confirmButtonColor: '#f87171',
+                        confirmButtonText: '🔒 فهمت',
+                        background: 'var(--card-bg)',
+                        color: 'var(--text)',
+                        backdrop: 'rgba(0,0,0,0.4)',
+                    }).then(() => {
+                        isRejected = true;
+                        notDoneBadge.style.display = 'none';
+                        reviewBtn.className = 'btn-review active rejected';
+                        reviewBtn.innerHTML = '<i class="fas fa-times-circle"></i> تم الرفض';
+                        reviewBtn.disabled = true;
+                        render();
+                    });
+                }, 2500);
             });
 
             // ====== START ======
             render();
-            console.log('✅ نظام الكنترول — الحد الأدنى للزيادة = نصف المجموع');
+            console.log('✅ نظام الكنترول — نسخة متطورة مع مراجعة التحويل');
+            console.log('📌 الحد الأدنى للزيادة = نصف المجموع');
             console.log('📌 الهدف: 256 درجة');
         })();
     </script>
